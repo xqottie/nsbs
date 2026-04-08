@@ -1,0 +1,126 @@
+---
+import CTASection from "../components/CTASection.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+
+const consultingFocus = [
+  {
+    title: "Employee engagement",
+    body: "Employee engagement is treated as a structural business outcome, not a standalone morale initiative.",
+  },
+  {
+    title: "Retention strategy",
+    body: "Retention strategy is designed around the conditions that make good people stay, ramp, and contribute with less drag.",
+  },
+  {
+    title: "Leadership development",
+    body: "Leadership development is tied to manager load, decision clarity, and the operating conditions leaders are being asked to navigate.",
+  },
+];
+---
+
+<MainLayout
+  title="Workforce Consulting and Employee Engagement Solutions | NSBS"
+  description="NSBS offers workforce consulting and employee engagement solutions with business advocacy, retention strategy support, leadership development guidance, and organizational performance focus."
+>
+  <PageIntro
+    eyebrow="Workforce Consulting"
+    title="Workforce consulting with business advocacy built into the work"
+    description="NSBS uses workforce consulting to help organizations understand employee engagement, retention strategy, leadership development, and organizational performance as system-generated business outcomes rather than disconnected HR concerns."
+    supportingPoints={[
+      "Advocacy with consulting discipline",
+      "Structural rather than generic",
+      "Built for measurable outcomes",
+    ]}
+  />
+
+  <SectionBlock
+    eyebrow="What makes it different"
+    title="Beyond standard workforce consulting"
+    intro="Unlike traditional consulting, NSBS does not stop at recommendations, broad engagement language, or generic leadership development advice."
+  >
+    <div class="split-layout">
+      <div class="narrative-block">
+        <p>
+          NSBS operates as a business advocate and workforce systems partner. That means the work
+          stays anchored to the structural conditions driving employee engagement, retention
+          strategy, leadership development, and organizational performance inside the business.
+        </p>
+        <p>
+          The aim is not to replace consulting language. It is to make workforce consulting more
+          precise, more useful, and more accountable to how the system is actually behaving.
+        </p>
+      </div>
+
+      <div class="content-panel">
+        <ul class="signal-list compact">
+          <li>Read workforce outcomes as system-generated conditions</li>
+          <li>Link engagement and retention to structure, not just motivation</li>
+          <li>Translate findings into decisions leaders can actually use</li>
+        </ul>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Business outcomes"
+    title="The business outcomes this work is built to improve"
+    intro="The consulting focus stays practical: better decisions, stronger operating conditions, and more stable workforce performance."
+  >
+    <div class="card-grid three-up">
+      {consultingFocus.map((item) => (
+        <article class="card">
+          <div class="card-title-row">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="How NSBS works"
+    title="A more structured consulting path"
+    intro="Workforce consulting is more valuable when it moves from diagnosis to interpretation to better system design."
+  >
+    <div class="card-grid three-up">
+      <article class="card">
+        <div class="card-title-row">
+          <p class="small-label mono-label">01 Diagnose</p>
+          <h3>Identify the real condition</h3>
+          <p>Use assessments, workforce analysis, and structured interpretation to understand what employee engagement and retention signals are actually saying.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-title-row">
+          <p class="small-label mono-label">02 Interpret</p>
+          <h3>Translate the business meaning</h3>
+          <p>Connect the signal to workload, clarity, leadership capacity, handoffs, documentation, and system stability.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-title-row">
+          <p class="small-label mono-label">03 Redesign</p>
+          <h3>Strengthen the conditions</h3>
+          <p>Turn the work into retention strategy, leadership development, redesign priorities, and better organizational performance choices.</p>
+        </div>
+      </article>
+    </div>
+    <div class="section-actions">
+      <a class="text-link" href="/services">Review consulting and advocacy services</a>
+    </div>
+  </SectionBlock>
+
+  <CTASection
+    title="Use workforce consulting as a business decision tool"
+    body="If your organization needs a clearer read on employee engagement, retention strategy, leadership development, or organizational performance, NSBS can help structure the next move."
+    actionHref="/contact"
+    actionLabel="Start a Conversation"
+    secondaryHref="/business-lab"
+    secondaryLabel="Enter the Business Lab"
+  />
+</MainLayout>

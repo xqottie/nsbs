@@ -1,0 +1,88 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+
+const articles = [
+  {
+    label: "Workforce brief",
+    title: "What persistent turnover may be signaling about retention strategy and system design",
+    body: "A future article examining when turnover reflects unresolved structural strain rather than isolated fit issues, and how better retention strategy can start with system interpretation.",
+  },
+  {
+    label: "Case example",
+    title: "Reading managerial overload as a leadership development and design condition",
+    body: "A future case example showing how leadership pressure often points to role architecture, governance, workflow problems, and the limits of generic leadership development.",
+  },
+  {
+    label: "Analysis",
+    title: "From employee engagement symptoms to structural diagnosis",
+    body: "A future analysis piece exploring how organizations can move from surface-level engagement concerns toward better structural interpretation and clearer workforce consulting decisions.",
+  },
+];
+---
+
+<MainLayout
+  title="Insights | Workforce Consulting, Employee Engagement & Retention Strategy | NSBS"
+  description="NSBS insights explore workforce consulting, employee engagement, retention strategy, leadership development, and organizational performance through a business advocacy lens."
+>
+  <PageIntro
+    eyebrow="Insights"
+    title="Thoughtful analysis for leaders working inside real workforce complexity"
+    description="The Insights section is being prepared as an editorial home for workforce consulting analysis, employee engagement strategy, retention strategy, leadership development, and practical writing on structural redesign."
+    supportingPoints={[
+      "Editorial and clean",
+      "Applied rather than abstract",
+      "Grounded in real organizational conditions",
+    ]}
+  />
+
+  <SectionBlock
+    eyebrow="Editorial direction"
+    title="A business advocacy editorial sensibility"
+    intro="The voice here is informed by real labor realities without becoming generic consulting copy, regional shorthand, or visual cliché."
+  >
+    <div class="split-layout">
+      <div class="narrative-block">
+        <p>
+          Future briefings can include regional workforce conditions, leadership pressures,
+          organizational case examples, and plain-language interpretation designed for serious
+          decision makers.
+        </p>
+        <p>
+          The editorial role of NSBS is to translate workforce consulting, employee engagement,
+          retention strategy, and leadership development into clearer business decisions rather than
+          leaving them as broad HR language.
+        </p>
+      </div>
+
+      <div class="content-panel">
+        <p class="small-label mono-label">Planned content lanes</p>
+        <ul class="signal-list compact">
+          <li>Workforce consulting analysis and regional conditions</li>
+          <li>Case examples, structural lessons, and employee engagement interpretation</li>
+          <li>Articles on redesign, retention strategy, and leadership development</li>
+        </ul>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Planned pieces"
+    title="Editorial placeholders"
+    intro="The page is ready to hold future writing while maintaining a restrained, premium editorial feel."
+  >
+    <div class="card-grid editorial-grid">
+      {articles.map((article) => (
+        <article class="card editorial-card">
+          <div class="card-title-row">
+            <p class="small-label mono-label">{article.label}</p>
+            <h2 class="subhead">{article.title}</h2>
+            <p class="body">{article.body}</p>
+            <a class="text-link" href="/contact">Start a Conversation</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+</MainLayout>

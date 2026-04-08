@@ -1,0 +1,159 @@
+---
+import CTASection from "../components/CTASection.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+
+const serviceCategories = [
+  {
+    eyebrow: "Assessments",
+    title: "Diagnostics and assessments",
+    body: "Structured diagnostics clarify strengths, pressure points, and what is actually driving engagement or performance issues before a larger consulting engagement begins.",
+    offerings: [
+      "SPARK Level 1 employee engagement assessment",
+      "BASKET analysis for performance and training diagnosis",
+      "Targeted consulting diagnostics for teams, roles, or workflow friction",
+    ],
+  },
+  {
+    eyebrow: "Consulting",
+    title: "Consulting and systems redesign",
+    body: "NSBS helps organizations translate findings into practical system changes, with support for engagement conditions, role clarity, leader expectations, and durable operating routines.",
+    offerings: [
+      "Workforce systems consulting",
+      "Employee engagement strategy and redesign support",
+      "Retention strategy consulting",
+      "Leadership alignment and implementation guidance",
+    ],
+  },
+  {
+    eyebrow: "Facilitation",
+    title: "Workshops and applied support",
+    body: "Workshops are used to align teams, reinforce design changes, and turn findings into usable action instead of relying on one-off inspiration.",
+    offerings: [
+      "Leadership and team workshops",
+      "Facilitated planning sessions",
+      "Applied learning and integration support",
+    ],
+  },
+];
+
+const engagementTiers = [
+  {
+    label: "Assessment",
+    range: "$250 to $500",
+    description: "Best for organizations that need a fast baseline before deciding whether broader consulting is necessary.",
+  },
+  {
+    label: "Diagnostic engagement",
+    range: "$1,500 to $7,500",
+    description: "Best for teams that need a clearer read on performance barriers, engagement conditions, or training transfer problems.",
+  },
+  {
+    label: "Consulting engagement",
+    range: "$7,500 to $25,000+",
+    description: "Best for organizations that need redesign support, implementation guidance, and sustained systems work over time.",
+  },
+];
+
+const fitSignals = [
+  "Employee engagement work is happening, but behavior and outcomes are not changing.",
+  "Turnover, burnout pressure, or unclear expectations are starting to affect stability.",
+  "Leaders need to know whether the issue is training, environment, role design, or a mix of factors.",
+  "You want a clearer way to connect workforce conditions to business performance.",
+];
+---
+
+<MainLayout
+  title="Services | Diagnostics, Consulting, Workshops, and Workforce Systems Support | NSBS"
+  description="NSBS offers diagnostics, workforce systems consulting, workshops, and implementation support to help organizations strengthen engagement, performance, and retention."
+>
+  <PageIntro
+    eyebrow="Services"
+    title="Diagnostics, consulting, and implementation support for sustainable workforce performance"
+    description="NSBS supports organizations through assessment, consulting, and applied systems work that strengthens engagement conditions, clarifies what needs to change, and helps improvements hold up under real operating pressure."
+    supportingPoints={[
+      "Assessment before assumption",
+      "Consulting tied to operating conditions",
+      "Support sized to the actual problem",
+    ]}
+  />
+
+  <SectionBlock
+    eyebrow="Services"
+    title="How support is organized"
+    intro="The live service model is built around three practical lanes: diagnose what is happening, redesign what is driving it, and support adoption so the work lasts."
+  >
+    <div class="card-grid services-grid">
+      {serviceCategories.map((category) => (
+        <article class="card service-card">
+          <div class="card-title-row">
+            <p class="small-label mono-label">{category.eyebrow}</p>
+            <h3>{category.title}</h3>
+            <p>{category.body}</p>
+          </div>
+          <ul class="signal-list compact">
+            {category.offerings.map((offering) => <li>{offering}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Fit"
+    title="When these services are most useful"
+    intro="This page works best as a decision page, so the focus here is on when to start, what kind of support fits, and how to choose the right entry point."
+  >
+    <div class="split-layout">
+      <div class="content-panel">
+        <ul class="signal-list">
+          {fitSignals.map((signal) => <li>{signal}</li>)}
+        </ul>
+      </div>
+
+      <div class="narrative-block">
+        <p>
+          In many cases, the first step is not a full consulting engagement. A lighter assessment
+          or diagnostic can clarify what should be trained, what should be reinforced, and what
+          needs to be redesigned in the surrounding system.
+        </p>
+        <p>
+          That helps organizations avoid overcommitting too early while still getting enough
+          structure to make a confident next decision.
+        </p>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Engagement ranges"
+    title="Typical starting ranges"
+    intro="The live site gives visitors a clearer sense of what kinds of support exist and how they scale. These ranges keep that transparency without overloading the page."
+  >
+    <div class="card-grid three-up">
+      {engagementTiers.map((tier) => (
+        <article class="card">
+          <div class="card-title-row">
+            <p class="small-label mono-label">{tier.label}</p>
+            <h3>{tier.range}</h3>
+            <p>{tier.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="section-actions">
+      <a class="text-link" href="/assessment">Start with SPARK Level 1</a>
+      <a class="text-link" href="/contact">Talk to NSBS</a>
+    </div>
+  </SectionBlock>
+
+  <CTASection
+    title="Choose the smallest useful starting point"
+    body="If you are not sure whether the situation calls for an assessment, a diagnostic engagement, or broader consulting support, start with a conversation and we can match the scope to the actual problem."
+    actionHref="/contact"
+    actionLabel="Start the Conversation"
+    secondaryHref="/assessment"
+    secondaryLabel="Begin Assessment"
+  />
+</MainLayout>

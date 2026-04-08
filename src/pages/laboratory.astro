@@ -1,0 +1,23 @@
+---
+const redirectTo = "/business-lab";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${redirectTo}`} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="The NSBS Laboratory has been renamed Business Lab. Redirecting to the updated page."
+    />
+    <title>Business Lab | NSBS</title>
+    <link rel="canonical" href={redirectTo} />
+  </head>
+  <body>
+    <p>
+      Redirecting to <a href={redirectTo}>Business Lab</a>.
+    </p>
+  </body>
+</html>

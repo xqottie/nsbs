@@ -1,0 +1,345 @@
+---
+const { intensity = "balanced" } = Astro.props;
+---
+
+<div class="field-shell" data-intensity={intensity} aria-hidden="true">
+  <div class="field-wash"></div>
+  <div class="field-focus"></div>
+  <div class="field-texture"></div>
+  <div class="field-pentagon-layer" data-pentagon-layer></div>
+</div>
+
+<script is:inline>
+  (() => {
+    const shell = document.currentScript?.previousElementSibling;
+    const layer = shell?.querySelector("[data-pentagon-layer]");
+
+    if (!shell || !layer) {
+      return;
+    }
+
+    const breakpoint = window.matchMedia("(max-width: 719px)");
+
+    const countMap = {
+      quiet: { mobile: 26, desktop: 38 },
+      balanced: { mobile: 36, desktop: 56 },
+      elevated: { mobile: 44, desktop: 68 },
+    };
+
+    const toneSets = [
+      {
+        stroke: "rgba(47, 111, 94, 0.68)",
+        strokeSoft: "rgba(47, 111, 94, 0.28)",
+        fill: "rgba(47, 111, 94, 0.12)",
+      },
+      {
+        stroke: "rgba(76, 143, 122, 0.62)",
+        strokeSoft: "rgba(76, 143, 122, 0.24)",
+        fill: "rgba(76, 143, 122, 0.1)",
+      },
+      {
+        stroke: "rgba(201, 162, 39, 0.54)",
+        strokeSoft: "rgba(201, 162, 39, 0.2)",
+        fill: "rgba(201, 162, 39, 0.08)",
+      },
+    ];
+
+    const motionModes = [
+      { weight: 0.34, name: "still" },
+      { weight: 0.34, name: "drift" },
+      { weight: 0.22, name: "bob" },
+      { weight: 0.1, name: "orbit" },
+    ];
+
+    const pickBand = (bands) => {
+      const roll = Math.random();
+      let threshold = 0;
+
+      for (const band of bands) {
+        threshold += band.weight;
+        if (roll <= threshold) {
+          return band;
+        }
+      }
+
+      return bands[bands.length - 1];
+    };
+
+    const rand = (min, max) => Math.random() * (max - min) + min;
+    const pickRange = (ranges) => {
+      const range = ranges[Math.floor(Math.random() * ranges.length)];
+      return rand(range.min, range.max);
+    };
+
+    const createField = () => {
+      const intensity = shell.dataset.intensity || "balanced";
+      const countGroup = countMap[intensity] || countMap.balanced;
+      const isMobile = breakpoint.matches;
+      const count = isMobile ? countGroup.mobile : countGroup.desktop;
+      const horizontalBands = isMobile
+        ? {
+            edge: [
+              { min: -2, max: 14 },
+              { min: 86, max: 102 },
+            ],
+            flank: [
+              { min: 14, max: 26 },
+              { min: 74, max: 86 },
+            ],
+            center: [
+              { min: 30, max: 42 },
+              { min: 58, max: 70 },
+            ],
+          }
+        : {
+            edge: [
+              { min: -3, max: 13 },
+              { min: 87, max: 103 },
+            ],
+            flank: [
+              { min: 13, max: 25 },
+              { min: 75, max: 87 },
+            ],
+            center: [
+              { min: 32, max: 41 },
+              { min: 59, max: 68 },
+            ],
+          };
+      const verticalBands = isMobile
+        ? {
+            edge: [
+              { min: -2, max: 16 },
+              { min: 78, max: 98 },
+            ],
+            center: [{ min: 16, max: 78 }],
+          }
+        : {
+            edge: [
+              { min: -3, max: 14 },
+              { min: 80, max: 100 },
+            ],
+            center: [{ min: 12, max: 82 }],
+          };
+
+      const sizeBands = isMobile
+        ? [
+            {
+              weight: 0.36,
+              min: 3.2,
+              max: 5.25,
+              opacityMin: 0.24,
+              opacityMax: 0.4,
+              edgeBias: 0.9,
+              strokeMin: 0.9,
+              strokeMax: 1.2,
+              fillBias: 0.18,
+              blurMax: 0.08,
+            },
+            {
+              weight: 0.31,
+              min: 5.25,
+              max: 7.8,
+              opacityMin: 0.24,
+              opacityMax: 0.4,
+              edgeBias: 0.78,
+              strokeMin: 0.95,
+              strokeMax: 1.35,
+              fillBias: 0.24,
+              blurMax: 0.14,
+            },
+            {
+              weight: 0.2,
+              min: 7.8,
+              max: 10.8,
+              opacityMin: 0.2,
+              opacityMax: 0.38,
+              edgeBias: 0.58,
+              strokeMin: 1,
+              strokeMax: 1.5,
+              fillBias: 0.34,
+              blurMax: 0.24,
+            },
+            {
+              weight: 0.1,
+              min: 10.8,
+              max: 14.6,
+              opacityMin: 0.15,
+              opacityMax: 0.28,
+              edgeBias: 0.38,
+              strokeMin: 1.2,
+              strokeMax: 1.75,
+              fillBias: 0.46,
+              blurMax: 0.36,
+            },
+            {
+              weight: 0.03,
+              min: 14.6,
+              max: 19.5,
+              opacityMin: 0.11,
+              opacityMax: 0.18,
+              edgeBias: 0.2,
+              strokeMin: 1.4,
+              strokeMax: 1.95,
+              fillBias: 0.58,
+              blurMax: 0.48,
+            },
+          ]
+        : [
+            {
+              weight: 0.34,
+              min: 3.4,
+              max: 5.4,
+              opacityMin: 0.22,
+              opacityMax: 0.38,
+              edgeBias: 0.92,
+              strokeMin: 0.88,
+              strokeMax: 1.15,
+              fillBias: 0.16,
+              blurMax: 0.05,
+            },
+            {
+              weight: 0.31,
+              min: 5.4,
+              max: 8.1,
+              opacityMin: 0.22,
+              opacityMax: 0.38,
+              edgeBias: 0.8,
+              strokeMin: 0.95,
+              strokeMax: 1.28,
+              fillBias: 0.22,
+              blurMax: 0.1,
+            },
+            {
+              weight: 0.21,
+              min: 8.1,
+              max: 11.4,
+              opacityMin: 0.18,
+              opacityMax: 0.32,
+              edgeBias: 0.6,
+              strokeMin: 1,
+              strokeMax: 1.45,
+              fillBias: 0.3,
+              blurMax: 0.18,
+            },
+            {
+              weight: 0.11,
+              min: 11.4,
+              max: 16,
+              opacityMin: 0.14,
+              opacityMax: 0.24,
+              edgeBias: 0.36,
+              strokeMin: 1.12,
+              strokeMax: 1.72,
+              fillBias: 0.44,
+              blurMax: 0.28,
+            },
+            {
+              weight: 0.03,
+              min: 16,
+              max: 22,
+              opacityMin: 0.1,
+              opacityMax: 0.16,
+              edgeBias: 0.18,
+              strokeMin: 1.22,
+              strokeMax: 1.9,
+              fillBias: 0.56,
+              blurMax: 0.4,
+            },
+          ];
+
+      const fragment = document.createDocumentFragment();
+      layer.innerHTML = "";
+
+      for (let index = 0; index < count; index += 1) {
+        const band = pickBand(sizeBands);
+        const tone = toneSets[Math.floor(Math.random() * toneSets.length)];
+        const motion = pickBand(motionModes);
+        const size = rand(band.min, band.max);
+        const placementMode = pickBand([
+          { weight: band.edgeBias * 0.72, name: "edge" },
+          { weight: 0.22, name: "flank" },
+          { weight: 1 - (band.edgeBias * 0.72 + 0.22), name: "center" },
+        ]);
+        const left =
+          placementMode.name === "edge"
+            ? pickRange(horizontalBands.edge)
+            : placementMode.name === "flank"
+              ? pickRange(horizontalBands.flank)
+              : pickRange(horizontalBands.center);
+        const topBand = Math.random() < 0.34 ? verticalBands.edge : verticalBands.center;
+        const top = pickRange(topBand);
+        const opacity = rand(band.opacityMin, band.opacityMax);
+        const driftDuration = rand(54, 122);
+        const pulseDuration = rand(18, 42);
+        const delay = rand(-28, 0);
+        const rotateStart = rand(-32, 32);
+        const rotateMid = rotateStart + rand(-10, 10);
+        const rotateEnd = rotateStart + rand(-14, 14);
+        const driftMidX = rand(-1.8, 1.8);
+        const driftMidY = rand(-1.4, 1.4);
+        const driftEndX = rand(-2.2, 2.2);
+        const driftEndY = rand(-1.8, 1.8);
+        const bobHeight = rand(0.35, 1.15);
+        const orbitMidX = rand(-1.2, 1.2);
+        const orbitMidY = rand(-1, 1);
+        const orbitEndX = rand(-1.5, 1.5);
+        const orbitEndY = rand(-1.25, 1.25);
+        const scaleStart = rand(0.975, 1.005);
+        const scaleMid = rand(0.995, 1.04);
+        const scaleEnd = rand(0.985, 1.015);
+        const strokeWidth = rand(band.strokeMin, band.strokeMax);
+        const innerStrokeWidth = strokeWidth * 0.72;
+        const strokeOpacity = rand(0.66, 0.98);
+        const fillOpacity = Math.random() < band.fillBias ? rand(0.1, 0.24) : rand(0.03, 0.08);
+        const innerOpacity = rand(0.22, 0.52);
+        const blur = rand(0, band.blurMax);
+
+        const pentagon = document.createElement("div");
+        pentagon.className = `field-pentagon field-pentagon--${motion.name}`;
+        pentagon.style.setProperty("--size", `${size.toFixed(2)}rem`);
+        pentagon.style.setProperty("--opacity", opacity.toFixed(3));
+        pentagon.style.setProperty("--drift-duration", `${driftDuration.toFixed(2)}s`);
+        pentagon.style.setProperty("--pulse-duration", `${pulseDuration.toFixed(2)}s`);
+        pentagon.style.setProperty("--delay", `${delay.toFixed(2)}s`);
+        pentagon.style.setProperty("--rotate-start", `${rotateStart.toFixed(2)}deg`);
+        pentagon.style.setProperty("--rotate-mid", `${rotateMid.toFixed(2)}deg`);
+        pentagon.style.setProperty("--rotate-end", `${rotateEnd.toFixed(2)}deg`);
+        pentagon.style.setProperty("--drift-mid-x", `${driftMidX.toFixed(2)}rem`);
+        pentagon.style.setProperty("--drift-mid-y", `${driftMidY.toFixed(2)}rem`);
+        pentagon.style.setProperty("--drift-end-x", `${driftEndX.toFixed(2)}rem`);
+        pentagon.style.setProperty("--drift-end-y", `${driftEndY.toFixed(2)}rem`);
+        pentagon.style.setProperty("--orbit-mid-x", `${orbitMidX.toFixed(2)}rem`);
+        pentagon.style.setProperty("--orbit-mid-y", `${orbitMidY.toFixed(2)}rem`);
+        pentagon.style.setProperty("--orbit-end-x", `${orbitEndX.toFixed(2)}rem`);
+        pentagon.style.setProperty("--orbit-end-y", `${orbitEndY.toFixed(2)}rem`);
+        pentagon.style.setProperty("--bob-rise", `${(-bobHeight).toFixed(2)}rem`);
+        pentagon.style.setProperty("--scale-start", scaleStart.toFixed(3));
+        pentagon.style.setProperty("--scale-mid", scaleMid.toFixed(3));
+        pentagon.style.setProperty("--scale-end", scaleEnd.toFixed(3));
+        pentagon.style.setProperty("--stroke-width", strokeWidth.toFixed(2));
+        pentagon.style.setProperty("--inner-stroke-width", innerStrokeWidth.toFixed(2));
+        pentagon.style.setProperty("--stroke-opacity", strokeOpacity.toFixed(3));
+        pentagon.style.setProperty("--fill-opacity", fillOpacity.toFixed(3));
+        pentagon.style.setProperty("--inner-opacity", innerOpacity.toFixed(3));
+        pentagon.style.setProperty("--stroke", tone.stroke);
+        pentagon.style.setProperty("--stroke-soft", tone.strokeSoft);
+        pentagon.style.setProperty("--fill", tone.fill);
+        pentagon.style.setProperty("--blur", `${blur.toFixed(2)}px`);
+        pentagon.style.setProperty("--top", `${top.toFixed(2)}%`);
+        pentagon.style.setProperty("--left", `${left.toFixed(2)}%`);
+        pentagon.innerHTML =
+          '<svg class="field-pentagon__svg" viewBox="0 0 100 100" focusable="false"><polygon class="field-pentagon__fill" points="50,7 91,36 75,86 25,86 9,36"></polygon><polygon class="field-pentagon__inner" points="50,18 79,39 68,73 32,73 21,39"></polygon><polygon class="field-pentagon__outer" points="50,7 91,36 75,86 25,86 9,36"></polygon></svg>';
+        fragment.appendChild(pentagon);
+      }
+
+      layer.appendChild(fragment);
+    };
+
+    const onBreakpointChange = () => {
+      createField();
+    };
+
+    createField();
+    breakpoint.addEventListener("change", onBreakpointChange);
+  })();
+</script>

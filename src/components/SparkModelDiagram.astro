@@ -1,0 +1,55 @@
+---
+const { className = "" } = Astro.props;
+
+const pillars = [
+  {
+    key: "social",
+    title: "Social",
+    summary: "Trust, connection, and relational steadiness.",
+  },
+  {
+    key: "purpose",
+    title: "Purpose",
+    summary: "Meaning, direction, and strategic coherence.",
+  },
+  {
+    key: "achievement",
+    title: "Achievement",
+    summary: "Progress, momentum, and credible accomplishment.",
+  },
+  {
+    key: "risk",
+    title: "Risk",
+    summary: "Challenge, experimentation, and supported learning under uncertainty.",
+  },
+  {
+    key: "knowledge",
+    title: "Knowledge",
+    summary: "Information flow, guidance, and practical clarity.",
+  },
+];
+---
+
+<figure class:list={["system-diagram", "spark-diagram", className]}>
+  <div class="spark-diagram__canvas" aria-label="SPARK model diagram">
+    <div class="spark-diagram__core">
+      <p class="small-label mono-label">SPARK model</p>
+      <h3 class="subhead">Five conditions, one workforce system.</h3>
+      <p class="body small">
+        SPARK helps leaders read how relational, strategic, operational, and informational
+        conditions interact rather than treating symptoms in isolation.
+      </p>
+    </div>
+
+    {
+      pillars.map((pillar) => (
+        <div class:list={["spark-diagram__node", `spark-diagram__node--${pillar.key}`]}>
+          <div class="spark-diagram__copy">
+            <p class="small-label mono-label">{pillar.title}</p>
+            <p class="body small">{pillar.summary}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</figure>

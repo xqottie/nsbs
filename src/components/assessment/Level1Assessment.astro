@@ -1,0 +1,1353 @@
+---
+import { sparkLevel1Questions, sparkPillars, sparkScaleOptions } from "../../data/sparkLevel1Questions";
+import RadarChart from "./RadarChart.astro";
+
+const questionSequence = sparkLevel1Questions;
+---
+
+<div class="assessment-shell" id="spark-level1-assessment" data-mode="form">
+  <section class="content-panel assessment-surface assessment-form-panel" data-assessment-form-surface>
+    <div class="assessment-progress-panel">
+      <div class="assessment-progress-head">
+        <div class="assessment-progress-copy">
+          <p class="small-label mono-label">Current assessment</p>
+          <h2 class="subhead">Assess workforce conditions across the five SPARK pillars.</h2>
+        </div>
+        <div class="assessment-progress-meta">
+          <p class="assessment-progress-value" data-progress-value>0/20</p>
+          <p class="meta" data-progress-band>0% complete</p>
+        </div>
+      </div>
+
+      <p class="body small assessment-progress-text" data-progress-text>
+        Question 1 of 20.
+      </p>
+
+      <div class="assessment-progress-track" aria-hidden="true">
+        <span class="assessment-progress-fill" data-progress-fill></span>
+      </div>
+
+      <div class="assessment-session-tools">
+        <p class="meta assessment-session-note">
+          Progress stays in this browser for the current session unless you clear it.
+        </p>
+        <div class="assessment-reset-group">
+          <button class="button button-ghost assessment-reset-button" type="button" data-reset-progress>Clear Session</button>
+          <button class="button button-ghost assessment-reset-cancel" type="button" data-cancel-reset hidden>Keep Progress</button>
+        </div>
+      </div>
+    </div>
+
+    <form class="assessment-form" data-assessment-form novalidate>
+      <div class="assessment-step-track" aria-live="polite">
+        {questionSequence.map((question, index) => (
+          <section
+            class="assessment-pillar assessment-pillar--single"
+            data-question-step
+            data-question-index={index}
+            hidden={index !== 0}
+          >
+            <div class="assessment-question-stage">
+              <fieldset
+                class="assessment-question assessment-question--single"
+                data-question-id={question.id}
+                tabindex="-1"
+              >
+                <legend>
+                  <span class="assessment-question-number mono-label">Question {String(question.number).padStart(2, "0")}</span>
+                  <span class="assessment-question-text">{question.prompt}</span>
+                </legend>
+
+                <div class="assessment-question-context">
+                  <p class="meta assessment-question-helper">
+                    Choose the response that best reflects present conditions.
+                  </p>
+                  <div class="assessment-options" role="radiogroup" aria-label={`Response options for question ${question.number}`}>
+                    {sparkScaleOptions.map((option) => (
+                      <label class="assessment-option">
+                        <input
+                          class="sr-only assessment-option-input"
+                          type="radio"
+                          name={question.id}
+                          value={option.value}
+                        />
+                        <span class="assessment-option-button" aria-hidden="true">
+                          <span class="assessment-option-value">{option.label}</span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <div class="assessment-submit-panel">
+        <div class="assessment-submit-copy">
+          <p class="meta assessment-footer-note">
+            Move backward if you need to review a previous response. Results are generated only after all questions are complete.
+          </p>
+          <p class="assessment-validation" data-validation-message aria-live="polite"></p>
+        </div>
+
+        <div class="assessment-action-row">
+          <div class="button-row">
+            <button class="button button-ghost" type="button" data-previous-question>Previous</button>
+            <button class="button button-secondary" type="button" data-next-question>Next Question</button>
+            <button class="button button-primary" type="submit" data-submit-results hidden>Generate Results</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="assessment-results" data-assessment-results hidden>
+    <article class="assessment-report" data-assessment-report>
+      <div class="assessment-report-header">
+        <div class="assessment-report-header-copy">
+          <p class="small-label mono-label">Level 1 executive snapshot</p>
+          <h2>SPARK Assessment Results</h2>
+          <p class="body assessment-report-description">
+            A concise view of current workforce conditions across the five SPARK pillars. This
+            report is designed to help leaders identify the clearest strengths, emerging pressure
+            points, and where deeper structural analysis may be useful next.
+          </p>
+        </div>
+
+        <div class="assessment-report-header-actions" data-export-hidden>
+          <button class="button button-secondary assessment-export-button" type="button" data-export-pdf>
+            Download Results (PDF)
+          </button>
+          <p class="meta assessment-export-status" data-export-status></p>
+        </div>
+      </div>
+
+      <div class="assessment-report-top-grid">
+        <article class="assessment-report-card assessment-radar-panel">
+          <div class="assessment-section-heading">
+            <p class="small-label mono-label">Pillar profile</p>
+            <h3>See the shape of the current system.</h3>
+            <p class="body small">
+              The radar view shows how evenly supportive conditions are distributed across Social,
+              Purpose, Achievement, Risk, and Knowledge.
+            </p>
+          </div>
+          <RadarChart />
+        </article>
+
+        <article class="assessment-report-card assessment-score-panel" data-score-tone="stable">
+          <div class="assessment-section-heading">
+            <p class="small-label mono-label">Composite score</p>
+            <h3>SPARK Index</h3>
+          </div>
+
+          <div class="assessment-score-display">
+            <div class="assessment-score-primary">
+              <p class="assessment-index-value"><span data-spark-index>0</span>%</p>
+              <p class="meta">Overall workforce condition index</p>
+            </div>
+
+            <div class="assessment-score-band">
+              <p class="meta">Risk level</p>
+              <p class="assessment-risk-level" data-risk-level>Stable</p>
+              <p class="meta" data-band-detail>Engagement band: Strong but Uneven</p>
+            </div>
+          </div>
+
+          <p class="body assessment-score-interpretation" data-score-interpretation>
+            Your overall interpretation will appear here once the assessment is complete.
+          </p>
+
+          <div class="assessment-score-metrics">
+            <div class="assessment-score-metric">
+              <span class="assessment-summary-metric-value" data-strength-count>2 strengths</span>
+              <span class="meta">Top-performing pillars</span>
+            </div>
+            <div class="assessment-score-metric">
+              <span class="assessment-summary-metric-value" data-focus-count>0 focus areas</span>
+              <span class="meta">Pillars under 70</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <section class="assessment-report-card assessment-pillars-section">
+        <div class="assessment-section-heading">
+          <p class="small-label mono-label">Pillar breakdown</p>
+          <h3>How each condition is contributing to the current result.</h3>
+        </div>
+
+        <div class="assessment-pillars-report-grid">
+          {sparkPillars.map((pillar) => (
+            <article
+              class="assessment-pillar-summary"
+              data-pillar-result={pillar.id}
+              style={`--pillar-accent: var(--spark-${pillar.id}); --pillar-score: 0%;`}
+            >
+              <div class="assessment-pillar-summary-head">
+                <p class="assessment-pillar-title">{pillar.title}</p>
+                <p class="assessment-pillar-score" data-pillar-value>0%</p>
+              </div>
+              <div class="assessment-pillar-meter" aria-hidden="true">
+                <span class="assessment-pillar-meter-fill"></span>
+              </div>
+              <p class="meta assessment-pillar-status" data-pillar-status>Stable</p>
+              <p class="body small assessment-pillar-copy" data-pillar-copy>
+                Pillar interpretation will appear here once the assessment is complete.
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="assessment-report-card assessment-summary-section">
+        <div class="assessment-section-heading">
+          <p class="small-label mono-label">Key insights</p>
+          <h3>What this result suggests at a leadership level.</h3>
+        </div>
+        <div class="assessment-summary-paragraphs" data-summary-paragraphs>
+          <p class="body" data-executive-summary>
+            Your summary will appear here once the assessment is complete.
+          </p>
+        </div>
+      </section>
+
+      <div class="assessment-report-lower-grid">
+        <section class="assessment-report-card assessment-implications-section">
+          <div class="assessment-section-heading">
+            <p class="small-label mono-label">Business implications</p>
+            <h3>What this pattern may be influencing operationally.</h3>
+          </div>
+          <ul class="signal-list compact assessment-detail-list" data-business-implications-list></ul>
+        </section>
+
+        <section class="assessment-report-card assessment-recommendations-panel">
+          <div class="assessment-section-heading">
+            <p class="small-label mono-label">Recommended next steps</p>
+            <h3>What to examine, clarify, or redesign next.</h3>
+          </div>
+          <ol class="assessment-recommendations-list" data-recommendations-list></ol>
+          <div class="assessment-deeper-analysis">
+            <p class="meta assessment-deeper-analysis-title" data-deeper-analysis-title>
+              Suggested deeper analysis
+            </p>
+            <p class="body small" data-deeper-analysis-body></p>
+          </div>
+        </section>
+      </div>
+
+      <section class="assessment-report-card assessment-next-step">
+        <div class="assessment-next-step-copy">
+          <p class="small-label mono-label">Next step</p>
+          <h3>Level 1 is a snapshot, not a root-cause diagnosis.</h3>
+          <p class="body">
+            If this result reflects a real leadership concern, the next step is structured analysis
+            that connects the pattern to the operating conditions shaping it.
+          </p>
+        </div>
+
+        <div class="button-row assessment-next-step-actions" data-export-hidden>
+          <a class="button button-primary" href="/business-lab">Explore the Business Lab</a>
+          <a class="button button-secondary" href="/contact">Start a Conversation</a>
+          <button class="button button-ghost" type="button" data-retake-assessment>Retake Assessment</button>
+        </div>
+      </section>
+    </article>
+  </section>
+
+  <section class="assessment-pdf-export" id="pdfExport" aria-hidden="true">
+    <div class="assessment-pdf-document" data-pdf-export-document></div>
+  </section>
+</div>
+
+<script is:inline src="/vendor/html2canvas.min.js"></script>
+<script is:inline src="/vendor/jspdf.umd.min.js"></script>
+
+<script>
+  import { initSparkLevel1Assessment } from "./level1AssessmentClient";
+
+  initSparkLevel1Assessment({
+    rootId: "spark-level1-assessment",
+    storageKey: "nsbs-spark-level1",
+  });
+</script>
+
+<script>
+  import { initSparkLevel1PdfExport } from "./level1AssessmentPdfClient";
+
+  initSparkLevel1PdfExport({
+    rootId: "spark-level1-assessment",
+  });
+</script>
+
+<style>
+  .assessment-shell,
+  .assessment-form,
+  .assessment-surface,
+  .assessment-form-panel,
+  .assessment-progress-panel,
+  .assessment-progress-head,
+  .assessment-progress-copy,
+  .assessment-session-tools,
+  .assessment-pillar,
+  .assessment-question-stage,
+  .assessment-question-context,
+  .assessment-step-track,
+  .assessment-question,
+  .assessment-submit-panel,
+  .assessment-submit-copy,
+  .assessment-action-row,
+  .assessment-results,
+  .assessment-results-hero,
+  .assessment-results-copy,
+  .assessment-chart-card,
+  .assessment-summary-card,
+  .assessment-summary-metrics,
+  .assessment-summary-metric,
+  .assessment-pillar-result,
+  .assessment-recommendations-list,
+  .assessment-deeper-panel,
+  .assessment-next-step {
+    display: grid;
+    gap: var(--panel-gap);
+  }
+
+  .assessment-shell {
+    gap: var(--space-5);
+  }
+
+  .assessment-form-panel {
+    gap: clamp(1rem, 0.8rem + 0.65vw, 1.4rem);
+    padding: clamp(1rem, 0.8rem + 0.75vw, 1.55rem);
+    border: 1px solid var(--line);
+    background: var(--color-surface);
+    box-shadow: none;
+  }
+
+  .assessment-progress-panel,
+  .assessment-results-hero,
+  .assessment-strategy-panel,
+  .assessment-recommendations-panel,
+  .assessment-deeper-panel {
+    background: var(--color-surface);
+  }
+
+  .assessment-progress-head,
+  .assessment-progress-meta,
+  .assessment-session-tools,
+  .assessment-summary-metrics,
+  .assessment-results-grid,
+  .assessment-action-row {
+    gap: var(--grid-gap);
+  }
+
+  .assessment-progress-meta {
+    justify-items: start;
+  }
+
+  .assessment-progress-panel {
+    gap: 0.8rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .assessment-progress-copy {
+    gap: 0.3rem;
+  }
+
+  .assessment-progress-value,
+  .assessment-index-value {
+    margin: 0;
+    color: var(--text-strong);
+    font-size: clamp(2.35rem, 4vw, 3.7rem);
+    font-weight: var(--weight-medium);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+
+  .assessment-progress-track {
+    position: relative;
+    height: 0.5rem;
+    border: 1px solid var(--line);
+    background: var(--color-muted-surface);
+    overflow: hidden;
+  }
+
+  .assessment-progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    background: linear-gradient(90deg, var(--accent), rgba(47, 111, 94, 0.24));
+    transition: width 0.24s ease;
+  }
+
+  .assessment-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.9rem;
+    padding: 0.28rem 0.68rem;
+    border: 1px solid var(--line);
+    background: var(--color-muted-surface);
+    color: var(--muted);
+    font-size: var(--text-meta);
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .assessment-session-tools {
+    gap: 0.7rem;
+    align-items: start;
+  }
+
+  .assessment-session-note {
+    margin: 0;
+    max-width: 48ch;
+  }
+
+  .assessment-scale-key-value,
+  .assessment-option-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.4rem;
+    min-height: 2.4rem;
+    border: 1px solid var(--line);
+    background: var(--color-surface);
+    color: var(--text-strong);
+    box-shadow: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .assessment-form {
+    gap: 1rem;
+  }
+
+  .assessment-step-track {
+    position: relative;
+  }
+
+  .assessment-pillar {
+    align-content: start;
+  }
+
+  .assessment-pillar--single {
+    gap: 0;
+  }
+
+  .assessment-question {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .assessment-question--single {
+    gap: 0.85rem;
+  }
+
+  .assessment-question-stage {
+    width: 100%;
+    padding: clamp(1.15rem, 0.95rem + 0.85vw, 1.8rem);
+    border: 1px solid var(--line);
+    background: #fcfdfe;
+    box-shadow: none;
+  }
+
+  .assessment-question legend {
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 0.25rem;
+    padding: 0;
+    width: 100%;
+  }
+
+  .assessment-question-number {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .assessment-question-text {
+    color: var(--text-strong);
+    font-size: clamp(1.52rem, 1.2rem + 1.05vw, 2.2rem);
+    font-weight: var(--weight-medium);
+    line-height: 1.14;
+    letter-spacing: -0.04em;
+    max-width: none;
+    text-wrap: pretty;
+  }
+
+  .assessment-question-context {
+    gap: 1rem;
+  }
+
+  .assessment-question-helper {
+    margin: 0;
+    max-width: 58ch;
+  }
+
+  .assessment-options {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+
+  .assessment-option {
+    display: grid;
+    align-content: start;
+    justify-items: stretch;
+  }
+
+  .assessment-option-button {
+    width: 100%;
+    min-height: 3.4rem;
+    border-radius: 0;
+    padding: 0.82rem 0.9rem;
+    text-align: center;
+    transition:
+      border-color 0.18s ease,
+      background-color 0.18s ease,
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .assessment-option-value {
+    font-size: 0.84rem;
+    line-height: 1.28;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  .assessment-option-input:focus-visible + .assessment-option-button {
+    outline: 2px solid rgba(92, 127, 163, 0.45);
+    outline-offset: 3px;
+  }
+
+  .assessment-option-input:checked + .assessment-option-button {
+    border-color: rgba(47, 111, 94, 0.28);
+    background: #f0f5f9;
+    color: var(--text-strong);
+    box-shadow: inset 0 0 0 1px rgba(47, 111, 94, 0.08);
+  }
+
+  .assessment-question.is-missing {
+    padding: 0.7rem;
+    border: 1px solid rgba(185, 92, 92, 0.36);
+    background: rgba(184, 92, 92, 0.08);
+  }
+
+  .assessment-submit-panel {
+    gap: 0.8rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    align-items: end;
+  }
+
+  .assessment-submit-copy {
+    gap: 0.3rem;
+  }
+
+  .assessment-footer-note {
+    margin: 0;
+    max-width: 52ch;
+  }
+
+  .assessment-submit-panel .button-row {
+    justify-content: flex-start;
+    gap: 0.7rem;
+  }
+
+  .assessment-reset-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .assessment-reset-button[data-confirming="true"] {
+    border-color: rgba(185, 92, 92, 0.36);
+    background: #f9eded;
+  }
+
+  .assessment-reset-cancel {
+    min-height: 2.5rem;
+  }
+
+  .assessment-validation {
+    min-height: 1.4rem;
+    margin: 0;
+    color: var(--color-warning);
+    font-size: var(--text-small);
+  }
+
+  .assessment-results {
+    gap: var(--space-4);
+  }
+
+  .assessment-pdf-export {
+    position: fixed;
+    top: 0;
+    left: -10000px;
+    width: 794px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 1;
+  }
+
+  .assessment-pdf-document {
+    width: 794px;
+    display: grid;
+    gap: 24px;
+  }
+
+  .assessment-pdf-page {
+    width: 794px;
+    height: 1123px;
+    padding: 30px 28px;
+    display: grid;
+    align-content: start;
+    gap: 20px;
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .assessment-pdf-header,
+  .assessment-pdf-overview-grid,
+  .assessment-pdf-detail-grid,
+  .assessment-pdf-score-top,
+  .assessment-pdf-metrics,
+  .assessment-pdf-pillars-grid,
+  .assessment-pdf-pillar-card,
+  .assessment-pdf-pillar-head,
+  .assessment-pdf-paragraphs,
+  .assessment-pdf-section-heading,
+  .assessment-pdf-callout {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .assessment-pdf-kicker,
+  .assessment-pdf-label,
+  .assessment-pdf-subtitle,
+  .assessment-pdf-metric-label {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .assessment-pdf-title,
+  .assessment-pdf-section-title,
+  .assessment-pdf-description,
+  .assessment-pdf-section-description,
+  .assessment-pdf-body,
+  .assessment-pdf-risk-caption,
+  .assessment-pdf-index-caption,
+  .assessment-pdf-pillar-status,
+  .assessment-pdf-pillar-insight,
+  .assessment-pdf-list,
+  .assessment-pdf-recommendations,
+  .assessment-pdf-recommendation-title,
+  .assessment-pdf-metric-value,
+  .assessment-pdf-pillar-title,
+  .assessment-pdf-pillar-score {
+    margin: 0;
+  }
+
+  .assessment-pdf-header {
+    gap: 0.5rem;
+  }
+
+  .assessment-pdf-header--compact {
+    gap: 0.35rem;
+  }
+
+  .assessment-pdf-title {
+    font-size: 1.8rem;
+    line-height: 1.08;
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.04em;
+  }
+
+  .assessment-pdf-title--compact {
+    font-size: 1.42rem;
+  }
+
+  .assessment-pdf-description,
+  .assessment-pdf-section-description,
+  .assessment-pdf-body,
+  .assessment-pdf-pillar-insight,
+  .assessment-pdf-risk-caption,
+  .assessment-pdf-index-caption,
+  .assessment-pdf-list,
+  .assessment-pdf-recommendations {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .assessment-pdf-overview-grid,
+  .assessment-pdf-detail-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .assessment-pdf-card {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    background: var(--color-surface);
+  }
+
+  .assessment-pdf-section-heading {
+    gap: 0.32rem;
+  }
+
+  .assessment-pdf-section-title {
+    font-size: 1.18rem;
+    line-height: 1.2;
+    font-weight: var(--weight-medium);
+    color: var(--text-strong);
+  }
+
+  .assessment-pdf-radar {
+    min-height: 13.25rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .assessment-pdf-radar-svg {
+    display: block;
+    width: 100%;
+    max-width: 17rem;
+    height: auto;
+  }
+
+  .assessment-pdf-card--score {
+    align-content: start;
+  }
+
+  .assessment-pdf-score-top {
+    grid-template-columns: minmax(0, 1fr) minmax(9.5rem, 0.82fr);
+    align-items: end;
+  }
+
+  .assessment-pdf-score-primary {
+    display: grid;
+    gap: 0.22rem;
+  }
+
+  .assessment-pdf-index-value {
+    margin: 0;
+    color: var(--text-strong);
+    font-size: 2.8rem;
+    line-height: 0.95;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+  }
+
+  .assessment-pdf-risk-panel {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--line);
+    background: var(--color-muted-surface);
+  }
+
+  .assessment-pdf-risk-title {
+    margin: 0;
+    color: var(--text-strong);
+    font-size: 1rem;
+    line-height: 1.2;
+    font-weight: var(--weight-medium);
+  }
+
+  .assessment-pdf-interpretation {
+    margin: 0;
+    color: var(--text-strong);
+    font-size: 0.94rem;
+    line-height: 1.42;
+  }
+
+  .assessment-pdf-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .assessment-pdf-metric {
+    display: grid;
+    gap: 0.12rem;
+    padding: 0.7rem 0.75rem;
+    border: 1px solid var(--line);
+    background: var(--color-muted-surface);
+  }
+
+  .assessment-pdf-metric-value {
+    color: var(--text-strong);
+    font-size: 0.95rem;
+    line-height: 1.3;
+    font-weight: var(--weight-medium);
+  }
+
+  .assessment-pdf-pillars-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .assessment-pdf-pillar-card {
+    gap: 0.45rem;
+    padding: 0.78rem;
+    border: 1px solid var(--line);
+    background: #fcfdfe;
+  }
+
+  .assessment-pdf-pillar-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem;
+    align-items: baseline;
+  }
+
+  .assessment-pdf-pillar-title,
+  .assessment-pdf-pillar-score {
+    color: var(--text-strong);
+    font-size: 0.88rem;
+    line-height: 1.25;
+    font-weight: var(--weight-medium);
+  }
+
+  .assessment-pdf-pillar-meter {
+    height: 0.36rem;
+    border-radius: 999px;
+    background: rgba(95, 107, 118, 0.12);
+    overflow: hidden;
+  }
+
+  .assessment-pdf-pillar-meter-fill {
+    display: block;
+    width: var(--pillar-score, 0%);
+    height: 100%;
+    background: var(--pillar-accent, var(--color-accent));
+  }
+
+  .assessment-pdf-pillar-status {
+    font-size: 0.72rem;
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .assessment-pdf-pillar-insight {
+    font-size: 0.78rem;
+    line-height: 1.36;
+  }
+
+  .assessment-pdf-list,
+  .assessment-pdf-recommendations {
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .assessment-pdf-list-item,
+  .assessment-pdf-recommendation {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.42;
+  }
+
+  .assessment-pdf-recommendation-title {
+    color: var(--text-strong);
+    font-size: 0.88rem;
+    font-weight: var(--weight-medium);
+    line-height: 1.3;
+  }
+
+  .assessment-pdf-body--compact {
+    font-size: 0.84rem;
+  }
+
+  .assessment-pdf-callout {
+    gap: 0.35rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .assessment-pdf-export .assessment-report-header-actions,
+  .assessment-pdf-export [data-export-hidden],
+  .assessment-pdf-export .assessment-next-step {
+    display: none !important;
+  }
+
+  .assessment-pdf-export .assessment-report-header {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .assessment-pdf-export .assessment-report-top-grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(15.5rem, 0.98fr);
+    align-items: start;
+  }
+
+  .assessment-pdf-export .assessment-report-lower-grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    align-items: start;
+  }
+
+  .assessment-pdf-export .assessment-score-display {
+    grid-template-columns: minmax(0, 1fr) minmax(10.5rem, 0.9fr);
+    align-items: end;
+  }
+
+  .assessment-pdf-export .assessment-radar {
+    min-height: 13.5rem;
+    height: 13.5rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .assessment-pdf-export .assessment-radar__svg,
+  .assessment-pdf-export [data-radar-svg] {
+    width: min(100%, 17.75rem);
+    max-width: 17.75rem;
+    height: auto;
+  }
+
+  .assessment-pdf-export .assessment-pillars-report-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .assessment-pdf-export .assessment-report-card {
+    gap: 0.8rem;
+    padding: 0.95rem;
+    border: 1px solid var(--line);
+    background: var(--color-surface);
+    break-inside: avoid;
+  }
+
+  .assessment-pdf-export .assessment-report {
+    width: auto;
+    max-width: none;
+    gap: 0;
+  }
+
+  .assessment-report {
+    display: grid;
+    gap: clamp(1rem, 0.8rem + 0.75vw, 1.5rem);
+  }
+
+  .assessment-report-card {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1rem, 0.85rem + 0.6vw, 1.45rem);
+    border: 1px solid var(--line);
+    background: var(--color-surface);
+  }
+
+  .assessment-report-header,
+  .assessment-report-top-grid,
+  .assessment-report-lower-grid,
+  .assessment-next-step,
+  .assessment-score-display,
+  .assessment-score-metrics,
+  .assessment-pillar-summary,
+  .assessment-pillar-summary-head,
+  .assessment-section-heading,
+  .assessment-report-header-actions {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .assessment-report-header {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .assessment-report-header-copy {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .assessment-report-header-copy h2 {
+    margin: 0;
+    font-size: clamp(1.8rem, 1.45rem + 0.95vw, 2.35rem);
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+  }
+
+  .assessment-report-description,
+  .assessment-score-interpretation {
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  .assessment-export-button {
+    justify-self: start;
+  }
+
+  .assessment-export-status {
+    min-height: 1.1rem;
+    margin: 0;
+  }
+
+  .assessment-report-top-grid,
+  .assessment-report-lower-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .assessment-section-heading {
+    gap: 0.35rem;
+  }
+
+  .assessment-section-heading h3 {
+    margin: 0;
+    font-size: clamp(1.15rem, 1rem + 0.42vw, 1.4rem);
+    line-height: 1.22;
+  }
+
+  .assessment-section-heading p:last-child {
+    margin: 0;
+  }
+
+  .assessment-radar-panel {
+    align-content: start;
+  }
+
+  .assessment-radar {
+    min-height: 17rem;
+  }
+
+  .assessment-radar__svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .assessment-score-panel {
+    align-content: start;
+    border-left: 3px solid rgba(47, 111, 94, 0.22);
+  }
+
+  .assessment-score-panel[data-score-tone="thriving"] {
+    border-left-color: rgba(76, 143, 122, 0.55);
+  }
+
+  .assessment-score-panel[data-score-tone="stable"] {
+    border-left-color: rgba(47, 111, 94, 0.42);
+  }
+
+  .assessment-score-panel[data-score-tone="at-risk"] {
+    border-left-color: rgba(196, 122, 44, 0.46);
+  }
+
+  .assessment-score-panel[data-score-tone="critical"] {
+    border-left-color: rgba(184, 92, 92, 0.52);
+  }
+
+  .assessment-score-display {
+    align-items: end;
+    padding-top: 0.25rem;
+  }
+
+  .assessment-score-primary,
+  .assessment-score-band {
+    display: grid;
+    gap: 0.28rem;
+  }
+
+  .assessment-score-band {
+    align-content: start;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--line);
+    background: var(--color-muted-surface);
+  }
+
+  .assessment-risk-level {
+    margin: 0;
+    color: var(--text-strong);
+    font-size: 1.1rem;
+    font-weight: var(--weight-medium);
+    line-height: 1.2;
+  }
+
+  .assessment-score-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding-top: 0.2rem;
+  }
+
+  .assessment-score-metric {
+    display: grid;
+    gap: 0.18rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--line);
+    background: var(--color-muted-surface);
+  }
+
+  .assessment-summary-metric-value {
+    color: var(--text-strong);
+    font-size: 1rem;
+    font-weight: var(--weight-medium);
+    line-height: 1.3;
+  }
+
+  .assessment-pillars-section {
+    gap: 1rem;
+  }
+
+  .assessment-pillars-report-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .assessment-pillar-summary {
+    gap: 0.55rem;
+    padding: 0.95rem;
+    border: 1px solid var(--line);
+    background: #fcfdfe;
+  }
+
+  .assessment-pillar-summary-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .assessment-pillar-title,
+  .assessment-pillar-score,
+  .assessment-pillar-status {
+    margin: 0;
+  }
+
+  .assessment-pillar-title {
+    color: var(--text-strong);
+    font-size: 0.92rem;
+    font-weight: var(--weight-medium);
+    line-height: 1.25;
+  }
+
+  .assessment-pillar-score {
+    color: var(--text-strong);
+    font-size: 1.3rem;
+    font-weight: var(--weight-medium);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .assessment-pillar-meter {
+    position: relative;
+    height: 0.35rem;
+    overflow: hidden;
+    background: var(--color-muted-surface);
+    border: 1px solid var(--line);
+  }
+
+  .assessment-pillar-meter-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--pillar-score);
+    background: color-mix(in srgb, var(--pillar-accent) 80%, white 20%);
+  }
+
+  .assessment-pillar-copy {
+    margin: 0;
+  }
+
+  .assessment-summary-section,
+  .assessment-implications-section,
+  .assessment-recommendations-panel,
+  .assessment-next-step {
+    align-content: start;
+  }
+
+  .assessment-summary-paragraphs {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .assessment-summary-paragraphs p {
+    margin: 0;
+    max-width: 78ch;
+  }
+
+  .assessment-detail-list {
+    margin: 0;
+  }
+
+  .assessment-detail-list li strong {
+    color: var(--text-strong);
+    font-weight: var(--weight-medium);
+  }
+
+  .assessment-recommendations-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .assessment-recommendations-list li {
+    padding-left: 0.15rem;
+  }
+
+  .assessment-recommendation-title {
+    margin: 0 0 0.24rem;
+    color: var(--text-strong);
+    font-size: var(--text-small);
+    font-weight: var(--weight-medium);
+    line-height: 1.45;
+  }
+
+  .assessment-deeper-analysis {
+    display: grid;
+    gap: 0.25rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .assessment-deeper-analysis-title {
+    margin: 0;
+    color: var(--text-strong);
+    font-weight: var(--weight-medium);
+  }
+
+  .assessment-next-step {
+    gap: 1rem;
+  }
+
+  .assessment-next-step-copy {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .assessment-next-step-copy h3,
+  .assessment-next-step-copy p {
+    margin: 0;
+  }
+
+  .assessment-next-step-actions {
+    justify-content: flex-start;
+  }
+
+  .assessment-report--pdf-capture {
+    width: 794px;
+    max-width: 794px;
+    gap: 0.9rem;
+  }
+
+  .assessment-report--pdf-capture .assessment-report-card {
+    gap: 0.8rem;
+    padding: 0.95rem;
+  }
+
+  .assessment-report--pdf-capture .assessment-report-header-copy h2 {
+    font-size: 1.9rem;
+  }
+
+  .assessment-report--pdf-capture .assessment-index-value {
+    font-size: 3.2rem;
+  }
+
+  .assessment-report--pdf-capture .assessment-pillars-report-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .assessment-report--pdf-capture .assessment-report-lower-grid,
+  .assessment-report--pdf-capture .assessment-report-top-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+
+  .assessment-report--pdf-capture .assessment-next-step {
+    display: none;
+  }
+
+  .assessment-report--pdf-capture [data-export-hidden] {
+    display: none !important;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (min-width: 720px) {
+    .assessment-progress-head,
+    .assessment-results-grid,
+    .assessment-results-hero,
+    .assessment-submit-panel,
+    .assessment-action-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+    }
+
+    .assessment-progress-meta {
+      justify-items: end;
+      text-align: right;
+    }
+
+    .assessment-session-tools {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .assessment-reset-group {
+      justify-content: flex-end;
+    }
+
+    .assessment-options {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .assessment-report-header {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+    }
+
+    .assessment-report-header-actions {
+      justify-items: end;
+      text-align: right;
+    }
+
+    .assessment-pillars-report-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 960px) {
+    .assessment-report-top-grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+      align-items: stretch;
+    }
+
+    .assessment-report-lower-grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      align-items: start;
+    }
+
+    .assessment-score-display {
+      grid-template-columns: minmax(0, 1fr) minmax(11rem, 0.9fr);
+      align-items: end;
+    }
+
+    .assessment-pillars-report-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .assessment-next-step {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .assessment-progress-fill,
+    .assessment-option-button {
+      transition: none;
+    }
+  }
+</style>

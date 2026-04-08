@@ -1,0 +1,658 @@
+---
+import CTASection from "../components/CTASection.astro";
+import HeroSection from "../components/HeroSection.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+import SparkModelDiagram from "../components/SparkModelDiagram.astro";
+
+const consoleHighlights = [
+  {
+    label: "Signals in view",
+    value: "5 SPARK conditions",
+    body: "Read workforce stability across social, strategic, operational, and informational conditions at the same time.",
+  },
+  {
+    label: "Friction focus",
+    value: "Structural hot spots",
+    body: "Surface where clarity gaps, overload, weak documentation, and decision lag are compounding.",
+  },
+  {
+    label: "Decision support",
+    value: "Intervention paths",
+    body: "Compare what happens if conditions stay unchanged, tighten further, or are structurally improved.",
+  },
+];
+
+const liveConditions = [
+  {
+    pillar: "Social",
+    status: "Coordination strain",
+    signal: "Cross-functional work depends on informal clarification and repeated follow-up.",
+    implication: "Execution slows and ownership becomes easier to blur.",
+  },
+  {
+    pillar: "Purpose",
+    status: "Decision drift",
+    signal: "Teams are active, but priorities shift before people can complete the previous direction.",
+    implication: "Energy stays high while alignment weakens.",
+  },
+  {
+    pillar: "Achievement",
+    status: "Progress obscured",
+    signal: "People are working hard, but progress checkpoints and success signals are inconsistent.",
+    implication: "Momentum becomes harder to trust and performance becomes harder to sustain.",
+  },
+  {
+    pillar: "Risk",
+    status: "Challenge constrained",
+    signal: "Managers absorb ambiguity while speaking up and testing ideas still feel personally risky.",
+    implication: "Voice narrows, experimentation slows, and burnout exposure rises.",
+  },
+  {
+    pillar: "Knowledge",
+    status: "Documentation fragility",
+    signal: "Critical know-how lives in inboxes, memory, and a few overloaded people.",
+    implication: "Errors repeat and institutional resilience drops.",
+  },
+];
+
+const sparkPillars = [
+  {
+    title: "Social",
+    meaning: "How well people can coordinate, trust one another, and move work through relationships without unnecessary drag.",
+    signals: [
+      "Escalations rise because routine coordination is fragile",
+      "Teams rely on extra meetings to create alignment",
+    ],
+    implication: "Weak Social conditions increase isolation, reduce coordination, and make collaboration more expensive than it appears.",
+    friction: "When Social conditions weaken, handoffs stall, misunderstandings increase, and informal repair work expands.",
+  },
+  {
+    title: "Purpose",
+    meaning: "The degree of clarity around direction, priorities, and why the work matters in this operating context.",
+    signals: [
+      "People are unsure which tradeoffs leadership wants",
+      "Priorities change faster than teams can reorient",
+    ],
+    implication: "Weak Purpose conditions create ambiguity, drift, and uneven decision-making across the organization.",
+    friction: "When Purpose weakens, teams stay busy but lose coherence, and leaders spend more time re-explaining intent.",
+  },
+  {
+    title: "Achievement",
+    meaning: "Whether the system enables visible progress, credible accomplishment, and a workable sense of forward motion.",
+    signals: [
+      "Progress is hard to verify without manual tracking",
+      "Recognition is inconsistent because success criteria keep moving",
+    ],
+    implication: "Weak Achievement conditions reduce momentum, confidence, and the organization’s ability to sustain effort.",
+    friction: "When Achievement weakens, people lose sight of progress, motivation becomes harder to stabilize, and performance feels harder to repeat.",
+  },
+  {
+    title: "Risk",
+    meaning: "The conditions that let people take thoughtful risks, test ideas, and navigate uncertainty without fear-based hesitation.",
+    signals: [
+      "People wait for cover before challenging assumptions",
+      "Experimentation slows because error feels more visible than learning",
+    ],
+    implication: "Weak Risk conditions suppress voice, reduce innovation capacity, and increase burnout exposure.",
+    friction: "When Risk weakens, people avoid challenge, leaders hear concerns later, and the system loses learning speed just when uncertainty is highest.",
+  },
+  {
+    title: "Knowledge",
+    meaning: "How clearly information, guidance, context, and operating logic move through the business.",
+    signals: [
+      "Teams ask the same questions because guidance is scattered",
+      "Critical context disappears when key people are unavailable",
+    ],
+    implication: "Weak Knowledge conditions produce confusion, repeated errors, and institutional fragility.",
+    friction: "When Knowledge weakens, ramp slows, confidence drops, and the business becomes more dependent on memory than structure.",
+  },
+];
+
+const frictionPatterns = [
+  {
+    title: "Weak clarity",
+    summary: "When priorities, ownership, or decision rules are unclear, people compensate by checking, waiting, and duplicating effort.",
+    signals: [
+      "Work moves forward only after extra clarification",
+      "Managers become the default routing layer for routine decisions",
+      "Teams hedge because ownership feels provisional",
+    ],
+    effect: "Cycle time slows, accountability softens, and execution feels heavier than it should.",
+  },
+  {
+    title: "Weak documentation",
+    summary: "When process logic lives in memory instead of accessible systems, ordinary work becomes inconsistent and fragile.",
+    signals: [
+      "New hires need verbal rescue to complete basic tasks",
+      "Errors repeat because operating guidance is scattered",
+      "Institutional knowledge concentrates in a few people",
+    ],
+    effect: "Ramp time stretches, rework increases, and resilience falls when key people step away.",
+  },
+  {
+    title: "Unstable workload",
+    summary: "When workload swings without structural buffering, people spend more energy bracing than contributing.",
+    signals: [
+      "Teams move between urgency and recovery without stability",
+      "Priorities stack faster than capacity is redesigned",
+      "Managers absorb pressure that governance should handle",
+    ],
+    effect: "Burnout risk rises, judgment degrades, and the system becomes more reactive over time.",
+  },
+  {
+    title: "Poor feedback loops",
+    summary: "When feedback is delayed, inconsistent, or hard to act on, correction becomes slower and confidence weaker.",
+    signals: [
+      "People learn expectations only after something goes wrong",
+      "Leaders receive issues late because escalation feels risky",
+      "Teams repeat avoidable mistakes because learning does not travel",
+    ],
+    effect: "Quality drifts, trust erodes, and operational issues stay visible longer than they should.",
+  },
+];
+
+const workforceSignals = [
+  {
+    label: "Engagement drag",
+    stat: "1 in 3 engaged",
+    summary: "When engagement conditions weaken, the hidden cost shows up as slower execution, avoidable mistakes, and less recoverable capacity.",
+    action: "Use SPARK to identify whether the problem is clarity, coordination, challenge, or knowledge flow rather than treating it as a morale issue.",
+  },
+  {
+    label: "Turnover cost",
+    stat: "$4,700 per worker",
+    summary: "Turnover is not only a hiring problem. It signals structural friction that keeps training, ramp, and managerial effort from compounding.",
+    action: "Use Business Lab interpretation to surface which conditions are making retention more expensive than it needs to be.",
+  },
+  {
+    label: "Capacity constraints",
+    stat: "System pressure compounds",
+    summary: "Housing, mental health strain, and access constraints still matter because they shape the workforce environment leaders are operating inside.",
+    action: "Treat external labor pressure as decision context and redesign internal systems so the organization is less fragile under constraint.",
+  },
+];
+
+const scenarioStates = [
+  {
+    label: "Current condition",
+    title: "Managers are compensating for unclear ramp pathways",
+    body: "New hires rely on direct manager intervention for role context, decisions, and workflow interpretation because documentation and ownership lines are weak.",
+    points: [
+      "Managerial load stays artificially high",
+      "Ramp confidence depends on who is available to interpret the system",
+      "Early performance signals are noisy and hard to trust",
+    ],
+  },
+  {
+    label: "If unchanged",
+    title: "Pressure keeps migrating upward",
+    body: "The organization continues to treat onboarding drag as a coaching issue instead of a structural design issue, so managers carry more invisible labor every cycle.",
+    points: [
+      "Ramp time remains uneven",
+      "Escalations increase as workload fluctuates",
+      "Retention risk rises during the first months of tenure",
+    ],
+  },
+  {
+    label: "If improved",
+    title: "Clarity is designed into the operating system",
+    body: "Structured documentation, clearer ownership, and steadier feedback loops reduce the amount of interpretation managers have to supply in real time.",
+    points: [
+      "Managerial capacity returns to higher-value work",
+      "New hires gain confidence faster and with less rescue",
+      "Workforce stability becomes easier to sustain and measure",
+    ],
+  },
+];
+
+const outcomeSignals = [
+  "Reduce hidden coordination work that does not appear on formal plans",
+  "Stabilize manager bandwidth so leadership attention is not spent on preventable ambiguity",
+  "Strengthen retention conditions by improving clarity, support, and system trust",
+];
+---
+
+<MainLayout
+  title="Business Lab | Workforce Analysis, Employee Engagement & Retention Drivers | NSBS"
+  description="Explore the NSBS Business Laboratory, a practical business advocacy environment for workforce analysis, employee engagement conditions, retention drivers, and structural consulting decision support."
+>
+  <HeroSection
+    className="business-lab-hero"
+    eyebrow="Business Laboratory"
+    title="Simulate and Test Workforce Conditions"
+    body="The Business Lab gives leaders a more practical way to explore workforce analysis, employee engagement conditions, retention drivers, and workforce stability through the SPARK framework. Use interactive views, condition mapping, and scenario thinking to understand where systems hold and where they begin to fail."
+    actions={[
+      { href: "/contact", label: "Schedule a Diagnostic" },
+      { href: "/spark-framework", label: "Explore the System", variant: "secondary" },
+    ]}
+  >
+    <p class="eyebrow mono-label">Applied workforce intelligence</p>
+    <h2 class="subhead hero-aside-title">A business-facing environment for reading the conditions behind retention, performance, and supported challenge.</h2>
+    <ul class="signal-list compact">
+      <li>Reveal structural friction before it becomes a people problem.</li>
+      <li>Connect observatory intelligence to real operating conditions and decisions.</li>
+      <li>Test intervention pathways with a clearer read on business stability.</li>
+    </ul>
+    <p class="body small hero-aside-note">
+      This is where workforce conditions become visible, testable, and actionable.
+    </p>
+  </HeroSection>
+
+  <SectionBlock
+    eyebrow="Live Business Conditions"
+    title="A practical workbench for seeing what is changing, where friction is forming, and what needs a decision."
+    intro="The Business Lab reframes the former observatory experience into a more structured decision environment. It helps leaders move from pattern recognition to workforce analysis, interpretation, intervention thinking, and clearer next steps around engagement conditions and retention drivers."
+  >
+    <div class="lab-console">
+      <div class="lab-console-summary">
+        {consoleHighlights.map((item) => (
+          <article class="card lab-stat-card">
+            <p class="small-label mono-label">{item.label}</p>
+            <h3>{item.value}</h3>
+            <p class="body small">{item.body}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="lab-console-grid">
+        <article class="content-panel lab-console-primary">
+          <div class="lab-console-header">
+            <div>
+              <p class="small-label mono-label">SPARK Business Lab Console</p>
+              <h3>See workforce conditions in motion, not as isolated symptoms.</h3>
+            </div>
+            <p class="body small">
+              The console organizes live condition reading around the five SPARK dimensions so leaders
+              can interpret how coordination, clarity, accomplishment, challenge, and information
+              flow are interacting across the same system.
+            </p>
+          </div>
+
+          <div class="lab-condition-board" aria-label="Current business condition signals">
+            {liveConditions.map((condition) => (
+              <article class="lab-condition-row">
+                <div class="lab-condition-row-head">
+                  <div>
+                    <p class="small-label mono-label">{condition.pillar}</p>
+                    <p class="body"><strong>{condition.signal}</strong></p>
+                  </div>
+                  <span class="lab-status">{condition.status}</span>
+                </div>
+                <p class="body small">{condition.implication}</p>
+              </article>
+            ))}
+          </div>
+        </article>
+
+        <div class="lab-console-stack">
+          <article class="card lab-console-card">
+            <p class="small-label mono-label">Observatory intelligence</p>
+            <h3>Pattern reading translated for leaders</h3>
+            <p class="body small">
+              The Business Lab keeps the observatory discipline of signal recognition, but it is
+              organized around business questions leaders actually need to answer.
+            </p>
+            <ul class="signal-list compact">
+              <li>Which conditions are weakening first</li>
+              <li>Where friction is clustering across teams and roles</li>
+              <li>What is likely to happen if the system is left unchanged</li>
+            </ul>
+          </article>
+
+          <article class="card lab-console-card">
+            <p class="small-label mono-label">Decision support</p>
+            <h3>What this helps a leader do next</h3>
+            <div class="lab-tag-row" aria-label="Business Lab decisions supported">
+              <span class="lab-tag">Clarify ownership</span>
+              <span class="lab-tag">Reduce drag</span>
+              <span class="lab-tag">Stabilize retention</span>
+              <span class="lab-tag">Support managers</span>
+            </div>
+            <p class="body small">
+              SPARK works here as both a diagnostic and an operating framework, helping leaders move
+              from interpretation to better structural choices with more confidence.
+            </p>
+            <a class="text-link" href="/services">Review consulting services</a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Condition Exploration"
+    title="Read each SPARK condition in plain business terms."
+    intro="The Business Lab makes each pillar easier to interpret by connecting the condition itself to visible signals, business implications, common friction patterns, and the way employee engagement and retention are structurally influenced."
+  >
+    <SparkModelDiagram />
+
+    <div class="card-grid spark-grid spark-grid--dense business-lab-pillars">
+      {sparkPillars.map((pillar) => (
+        <article class="card lab-pillar-card pillar-card--dense">
+          <div class="card-title-row">
+            <h3>{pillar.title}</h3>
+            <p class="body small">{pillar.meaning}</p>
+          </div>
+
+          <div class="lab-pillar-groups">
+            <div class="lab-pillar-group">
+              <p class="small-label mono-label">Condition signals</p>
+              <ul class="signal-list compact">
+                {pillar.signals.map((signal) => <li>{signal}</li>)}
+              </ul>
+            </div>
+
+            <div class="lab-pillar-group">
+              <p class="small-label mono-label">Business implication</p>
+              <p class="body small">{pillar.implication}</p>
+            </div>
+
+            <div class="lab-pillar-group">
+              <p class="small-label mono-label">Example friction pattern</p>
+              <p class="body small">{pillar.friction}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Signal Briefs"
+    title="Use workforce signals as decision context, not homepage clutter."
+    intro="The old Workforce Signals concept still has value when it is treated as a compact business input. In the Business Lab, signal briefs help leaders connect labor-market pressure and organizational conditions without turning the homepage into a report."
+  >
+    <div class="card-grid three-up compact-feature-grid">
+      {workforceSignals.map((signal) => (
+        <article class="card">
+          <div class="card-title-row">
+            <p class="small-label mono-label">{signal.label}</p>
+            <h3>{signal.stat}</h3>
+            <p>{signal.summary}</p>
+          </div>
+          <p class="small-label mono-label">Decision use</p>
+          <p class="body small">{signal.action}</p>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="System Interpretation"
+    title="See how weak conditions compound into measurable business problems."
+    intro="Workforce instability rarely appears as one obvious failure. It travels through the system as delay, duplication, overloaded managers, avoidable confusion, and challenge that feels unsafe to carry."
+  >
+    <div class="card-grid two-up friction-grid">
+      {frictionPatterns.map((pattern) => (
+        <article class="card friction-card">
+          <div class="friction-card-header">
+            <div class="card-title-row">
+              <h3>{pattern.title}</h3>
+              <p>{pattern.summary}</p>
+            </div>
+          </div>
+
+          <div class="lab-pillar-group">
+            <p class="small-label mono-label">How it shows up</p>
+            <ul class="signal-list compact">
+              {pattern.signals.map((signal) => <li>{signal}</li>)}
+            </ul>
+          </div>
+
+          <div class="friction-footer">
+            <p class="small-label mono-label">Cascade effect</p>
+            <p class="body small">{pattern.effect}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Scenario Testing"
+    title="Pressure-test intervention choices before committing to them."
+    intro="Even before full simulation logic is expanded, the Business Lab is designed to support predictive thinking by comparing current conditions, likely drift, and structurally improved states for employee engagement, retention, and organizational performance."
+  >
+    <div class="content-panel scenario-shell">
+      <div class="scenario-intro">
+        <p class="small-label mono-label">Scenario frame</p>
+        <h3>Ramp clarity, manager load, and early retention stability</h3>
+        <p class="body small">
+          This example shows how the Business Lab can help leaders examine what happens when
+          workforce friction is left alone versus structurally improved through clearer operating
+          conditions.
+        </p>
+      </div>
+
+      <div class="scenario-grid">
+        {scenarioStates.map((state, index) => (
+          <article class:list={["card", "scenario-card", index === 0 && "scenario-card--current", index === 1 && "scenario-card--risk", index === 2 && "scenario-card--improved"]}>
+            <p class="small-label mono-label">{state.label}</p>
+            <h3>{state.title}</h3>
+            <p class="body small">{state.body}</p>
+            <ul class="signal-list compact">
+              {state.points.map((point) => <li>{point}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <div class="card-grid two-up scenario-outcome-grid">
+        <article class="card scenario-outcome">
+          <p class="small-label mono-label">Projected effect on stability</p>
+          <p class="body small">
+            When clarity, documentation, and feedback improve together, the business gets a more
+            reliable workforce signal. Leaders can see whether pressure is reducing in a durable way
+            instead of guessing from morale alone.
+          </p>
+        </article>
+
+        <article class="card scenario-outcome">
+          <p class="small-label mono-label">What strengthens first</p>
+          <ul class="signal-list compact">
+            {outcomeSignals.map((signal) => <li>{signal}</li>)}
+          </ul>
+        </article>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <CTASection
+    title="Bring your real workforce conditions into the Business Lab"
+    body="Use NSBS to translate pressure, ambiguity, engagement concerns, and retention drag into a clearer systems view. Then decide what to redesign with stronger evidence, steadier judgment, and a more precise consulting approach."
+    actionHref="/assessment"
+    actionLabel="Begin Assessment"
+    secondaryHref="/contact"
+    secondaryLabel="Start a Conversation"
+  />
+</MainLayout>
+
+<style>
+  .business-lab-hero .hero-title {
+    max-width: 12.3ch;
+  }
+
+  .business-lab-hero .hero-body {
+    max-width: 43rem;
+  }
+
+  .lab-console,
+  .lab-console-primary,
+  .lab-console-stack,
+  .lab-console-card,
+  .lab-condition-board,
+  .lab-pillar-card,
+  .lab-pillar-groups,
+  .lab-pillar-group,
+  .friction-card,
+  .scenario-shell,
+  .scenario-intro,
+  .scenario-card,
+  .scenario-outcome {
+    display: grid;
+    gap: var(--panel-gap);
+  }
+
+  .lab-console-summary,
+  .lab-console-grid,
+  .friction-grid,
+  .scenario-grid,
+  .scenario-outcome-grid {
+    display: grid;
+    gap: var(--grid-gap);
+  }
+
+  .lab-stat-card {
+    align-content: start;
+  }
+
+  .lab-stat-card h3,
+  .lab-console-primary h3,
+  .lab-console-card h3,
+  .scenario-card h3,
+  .scenario-outcome h3 {
+    font-size: clamp(1rem, 1.1vw, 1.18rem);
+    line-height: 1.34;
+    letter-spacing: -0.02em;
+  }
+
+  .lab-console-header {
+    display: grid;
+    gap: 0.8rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .lab-condition-row {
+    display: grid;
+    gap: 0.55rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .lab-condition-row:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .lab-condition-row-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .lab-condition-row-head p {
+    margin: 0;
+  }
+
+  .lab-status,
+  .lab-tag {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.36rem 0.52rem 0.32rem;
+    border: 1px solid var(--line);
+    background: #f6f8fa;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-mono);
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+
+  .lab-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .business-lab-pillars {
+    align-items: stretch;
+  }
+
+  .lab-pillar-card {
+    align-content: start;
+  }
+
+  .lab-pillar-group {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .lab-pillar-group .small-label,
+  .friction-footer .small-label,
+  .scenario-intro .small-label {
+    margin-bottom: 0;
+  }
+
+  .lab-pillar-group p:last-child,
+  .friction-footer p:last-child,
+  .scenario-intro p:last-child {
+    margin-bottom: 0;
+  }
+
+  .friction-card {
+    align-content: start;
+  }
+
+  .friction-card-header {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .friction-footer {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .scenario-shell {
+    gap: clamp(1rem, 1.8vw, 1.4rem);
+  }
+
+  .scenario-card {
+    align-content: start;
+    min-height: 100%;
+  }
+
+  .scenario-card--current {
+    background: var(--color-surface);
+    border-color: rgba(47, 111, 94, 0.28);
+  }
+
+  .scenario-card--risk {
+    background: #fcf7f0;
+    border-color: rgba(196, 122, 44, 0.24);
+  }
+
+  .scenario-card--improved {
+    background: #f4f8f5;
+    border-color: rgba(76, 143, 122, 0.24);
+  }
+
+  @media (min-width: 720px) {
+    .lab-console-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .friction-grid,
+    .scenario-outcome-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .scenario-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 960px) {
+    .lab-console-grid {
+      grid-template-columns: minmax(0, 1.22fr) minmax(17rem, 0.78fr);
+      align-items: start;
+    }
+  }
+</style>

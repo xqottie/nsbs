@@ -1,0 +1,63 @@
+---
+const { className = "" } = Astro.props;
+
+const symptomTrack = [
+  "Pressure appears in turnover, overload, or engagement drag.",
+  "The response centers on training, effort, or managerial compensation.",
+  "The same instability returns because the underlying design remains intact.",
+];
+
+const structuralTrack = [
+  "Pressure is assessed as a systems signal rather than a people flaw.",
+  "Roles, handoffs, governance, incentives, and workflows are redesigned.",
+  "The system becomes clearer, steadier, and less dependent on heroic effort.",
+];
+---
+
+<figure class:list={["system-diagram", "comparison-diagram", className]}>
+  <div class="comparison-diagram__header">
+    <p class="small-label mono-label">Structural-first comparison</p>
+    <h3 class="subhead">The same pressure can be handled in two very different ways.</h3>
+  </div>
+
+  <div class="comparison-diagram__trigger">
+    <div>
+      <p class="small-label mono-label">Observed condition</p>
+      <p class="body small">
+        Leaders notice strain, inconsistency, turnover drag, or rising managerial load.
+      </p>
+    </div>
+  </div>
+
+  <div class="comparison-diagram__grid" aria-label="Comparison between symptom management and structural-first response">
+    <section class="comparison-diagram__lane comparison-diagram__lane--symptom">
+      <div class="comparison-diagram__lane-head">
+        <div>
+          <p class="small-label mono-label">Symptom management</p>
+          <p class="body small">A response that treats the visible effect but leaves the system unchanged.</p>
+        </div>
+      </div>
+
+      <ol class="comparison-diagram__steps">
+        {symptomTrack.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <p class="comparison-diagram__outcome">Outcome: effort rises, ambiguity remains, and the pattern repeats.</p>
+    </section>
+
+    <section class="comparison-diagram__lane comparison-diagram__lane--structural">
+      <div class="comparison-diagram__lane-head">
+        <div>
+          <p class="small-label mono-label">Structural-first response</p>
+          <p class="body small">A response that interprets the signal, then redesigns the conditions creating it.</p>
+        </div>
+      </div>
+
+      <ol class="comparison-diagram__steps">
+        {structuralTrack.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <p class="comparison-diagram__outcome">Outcome: pressure becomes legible, and steadier performance has somewhere real to come from.</p>
+    </section>
+  </div>
+</figure>

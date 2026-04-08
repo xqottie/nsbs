@@ -1,0 +1,481 @@
+---
+interface Props {
+  size?: number;
+  title?: string;
+  interactive?: boolean;
+}
+
+const {
+  size = 420,
+  title = "SPARK Model of Engagement",
+  interactive = true,
+} = Astro.props;
+
+const cx = 200;
+const cy = 200;
+const outerR = 118;
+const innerR = 62;
+
+const pillars = [
+  { key: "social", label: "Social", short: "S", color: "#4C8F7A", angle: -90 },
+  { key: "purpose", label: "Purpose", short: "P", color: "#3F7664", angle: -18 },
+  { key: "achievement", label: "Achievement", short: "A", color: "#C9A227", angle: 54 },
+  { key: "risk", label: "Risk", short: "R", color: "#C47A2C", angle: 126 },
+  { key: "knowledge", label: "Knowledge", short: "K", color: "#5C7D6F", angle: 198 },
+];
+
+function polarToCartesian(angleDeg: number, radius: number) {
+  const rad = (angleDeg * Math.PI) / 180;
+  return {
+    x: cx + Math.cos(rad) * radius,
+    y: cy + Math.sin(rad) * radius,
+  };
+}
+
+const outerPoints = pillars.map((p) => ({ ...p, ...polarToCartesian(p.angle, outerR) }));
+const innerPoints = pillars.map((p) => ({ ...p, ...polarToCartesian(p.angle, innerR) }));
+
+const outerPolygon = outerPoints.map((p) => `${p.x},${p.y}`).join(" ");
+const innerPolygon = innerPoints.map((p) => `${p.x},${p.y}`).join(" ");
+const rootId = `spark-sketch-${Math.random().toString(36).slice(2, 10)}`;
+---
+
+<div
+  id={rootId}
+  class="spark-sketch"
+  style={`--diagram-size:${size}px;`}
+  data-interactive={interactive ? "true" : "false"}
+>
+  <div class="spark-sketch__frame">
+    <svg
+      viewBox="0 0 400 400"
+      width={size}
+      height={size}
+      role="img"
+      aria-labelledby={`${rootId}-title ${rootId}-desc`}
+      class="spark-sketch__svg"
+    >
+      <title id={`${rootId}-title`}>{title}</title>
+      <desc id={`${rootId}-desc`}>
+        A five-point SPARK pentagon diagram showing Social, Purpose, Achievement, Risk, and
+        Knowledge.
+      </desc>
+
+      <defs>
+        <filter id={`${rootId}-pencil-soften`} x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="7" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.35" />
+        </filter>
+      </defs>
+
+      <g class="spark-sketch__base">
+        <circle cx={cx} cy={cy} r="4" class="spark-sketch__center-dot" />
+
+        <polygon
+          points={outerPolygon}
+          class="spark-sketch__outer"
+          filter={`url(#${rootId}-pencil-soften)`}
+        />
+        <polygon
+          points={innerPolygon}
+          class="spark-sketch__inner"
+          filter={`url(#${rootId}-pencil-soften)`}
+        />
+
+        {outerPoints.map((p) => (
+          <line
+            x1={cx}
+            y1={cy}
+            x2={p.x}
+            y2={p.y}
+            class="spark-sketch__axis"
+            filter={`url(#${rootId}-pencil-soften)`}
+          />
+        ))}
+
+        {[0.38, 0.72].map((scale) => {
+          const ring = pillars
+            .map((p) => {
+              const pt = polarToCartesian(p.angle, outerR * scale);
+              return `${pt.x},${pt.y}`;
+            })
+            .join(" ");
+          return (
+            <polygon
+              points={ring}
+              class="spark-sketch__guide"
+              filter={`url(#${rootId}-pencil-soften)`}
+            />
+          );
+        })}
+      </g>
+
+      <g class="spark-sketch__interactive">
+        {outerPoints.map((p, i) => {
+          const labelPt = polarToCartesian(p.angle, outerR + 28);
+          const chipPt = polarToCartesian(p.angle, outerR + 10);
+          return (
+            <g
+              class="spark-node"
+              data-key={p.key}
+              data-index={i}
+              tabindex={interactive ? "0" : undefined}
+              role={interactive ? "button" : undefined}
+              aria-label={p.label}
+              style={`--pillar:${p.color};`}
+            >
+              <line
+                x1={innerPoints[i].x}
+                y1={innerPoints[i].y}
+                x2={p.x}
+                y2={p.y}
+                class="spark-node__segment"
+                filter={`url(#${rootId}-pencil-soften)`}
+              />
+
+              <circle cx={chipPt.x} cy={chipPt.y} r="8.5" class="spark-node__chip-bg" />
+              <circle cx={chipPt.x} cy={chipPt.y} r="5.5" class="spark-node__chip" />
+
+              <circle cx={p.x} cy={p.y} r="10" class="spark-node__hit" />
+
+              <text
+                x={labelPt.x}
+                y={labelPt.y}
+                class="spark-node__label"
+                text-anchor="middle"
+                dominant-baseline="middle"
+              >
+                {p.label}
+              </text>
+
+              <text
+                x={chipPt.x}
+                y={chipPt.y + 0.5}
+                class="spark-node__letter"
+                text-anchor="middle"
+                dominant-baseline="middle"
+              >
+                {p.short}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+    </svg>
+  </div>
+
+  <div class="spark-sketch__legend" aria-hidden={interactive ? "false" : "true"}>
+    {pillars.map((p) => (
+      <button
+        type="button"
+        class="spark-pill"
+        data-key={p.key}
+        style={`--pillar:${p.color};`}
+        tabindex={interactive ? undefined : "-1"}
+      >
+        <span class="spark-pill__dot"></span>
+        <span>{p.label}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const diagram = document.getElementById(`${rootId}`);
+    if (!diagram) return;
+
+    const interactive = diagram.dataset.interactive === "true";
+    const nodes = [...diagram.querySelectorAll(".spark-node")];
+    const pills = [...diagram.querySelectorAll(".spark-pill")];
+
+    const setActive = (key) => {
+      nodes.forEach((node) => node.toggleAttribute("data-active", node.dataset.key === key));
+      pills.forEach((pill) => pill.toggleAttribute("data-active", pill.dataset.key === key));
+    };
+
+    const clearActive = () => {
+      nodes.forEach((node) => node.removeAttribute("data-active"));
+      pills.forEach((pill) => pill.removeAttribute("data-active"));
+    };
+
+    if (!interactive) {
+      return;
+    }
+
+    nodes.forEach((node) => {
+      const key = node.dataset.key;
+
+      node.addEventListener("mouseenter", () => setActive(key));
+      node.addEventListener("focus", () => setActive(key));
+      node.addEventListener("mouseleave", clearActive);
+      node.addEventListener("blur", clearActive);
+      node.addEventListener("click", () => setActive(key));
+
+      node.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          setActive(key);
+        }
+      });
+    });
+
+    pills.forEach((pill) => {
+      const key = pill.dataset.key;
+      pill.addEventListener("mouseenter", () => setActive(key));
+      pill.addEventListener("focus", () => setActive(key));
+      pill.addEventListener("mouseleave", clearActive);
+      pill.addEventListener("blur", clearActive);
+      pill.addEventListener("click", () => setActive(key));
+    });
+  })();
+</script>
+
+<style>
+  .spark-sketch {
+    --diagram-size: 420px;
+    --bg: #f7faf7;
+    --surface: #ffffff;
+    --surface-muted: #eef4ef;
+    --border: #dce5de;
+    --text: #1f2a33;
+    --text-muted: #5f6b76;
+    --line: #bcc8bf;
+    --line-soft: #d6dfd8;
+    --focus: #2f6f5e;
+    width: 100%;
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+  }
+
+  .spark-sketch__frame {
+    width: min(100%, var(--diagram-size));
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f7faf7 72%, #eef4ef 100%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
+  .spark-sketch__svg {
+    overflow: visible;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .spark-sketch__outer,
+  .spark-sketch__inner,
+  .spark-sketch__guide,
+  .spark-sketch__axis,
+  .spark-node__segment {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .spark-sketch__outer {
+    stroke: var(--line);
+    stroke-width: 1.8;
+  }
+
+  .spark-sketch__inner {
+    stroke: var(--line-soft);
+    stroke-width: 1.15;
+  }
+
+  .spark-sketch__guide {
+    stroke: var(--line-soft);
+    stroke-width: 0.9;
+    stroke-dasharray: 2 7;
+    opacity: 0.95;
+  }
+
+  .spark-sketch__axis {
+    stroke: var(--line-soft);
+    stroke-width: 0.95;
+  }
+
+  .spark-sketch__center-dot {
+    fill: var(--text-muted);
+    opacity: 0.65;
+  }
+
+  .spark-node {
+    cursor: default;
+    outline: none;
+  }
+
+  [data-interactive="true"] .spark-node {
+    cursor: pointer;
+  }
+
+  .spark-node__segment {
+    stroke: color-mix(in srgb, var(--pillar) 34%, white 66%);
+    stroke-width: 1.8;
+    opacity: 0.82;
+    transition: stroke 180ms ease, stroke-width 180ms ease, opacity 180ms ease;
+    animation: sparkBreath 4.6s ease-in-out infinite;
+  }
+
+  .spark-node:nth-child(2) .spark-node__segment { animation-delay: 0.4s; }
+  .spark-node:nth-child(3) .spark-node__segment { animation-delay: 0.8s; }
+  .spark-node:nth-child(4) .spark-node__segment { animation-delay: 1.2s; }
+  .spark-node:nth-child(5) .spark-node__segment { animation-delay: 1.6s; }
+
+  .spark-node__chip-bg {
+    fill: var(--surface);
+    stroke: color-mix(in srgb, var(--pillar) 28%, #d7e1d9 72%);
+    stroke-width: 1;
+    transition: stroke 180ms ease, transform 180ms ease;
+    transform-origin: center;
+  }
+
+  .spark-node__chip {
+    fill: color-mix(in srgb, var(--pillar) 76%, white 24%);
+    opacity: 0.92;
+    transition: transform 180ms ease, opacity 180ms ease;
+    transform-origin: center;
+  }
+
+  .spark-node__hit {
+    fill: transparent;
+  }
+
+  .spark-node__letter {
+    font-family: "Poppins", system-ui, sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    fill: #ffffff;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+
+  .spark-node__label {
+    font-family: "Poppins", system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    fill: var(--text);
+    letter-spacing: 0.01em;
+    opacity: 0.9;
+    transition: fill 180ms ease, opacity 180ms ease;
+    user-select: none;
+  }
+
+  .spark-node[data-active] .spark-node__segment,
+  .spark-node:hover .spark-node__segment,
+  .spark-node:focus-visible .spark-node__segment {
+    stroke: var(--pillar);
+    stroke-width: 2.3;
+    opacity: 1;
+  }
+
+  .spark-node[data-active] .spark-node__chip-bg,
+  .spark-node:hover .spark-node__chip-bg,
+  .spark-node:focus-visible .spark-node__chip-bg {
+    stroke: var(--pillar);
+  }
+
+  .spark-node[data-active] .spark-node__chip,
+  .spark-node:hover .spark-node__chip,
+  .spark-node:focus-visible .spark-node__chip {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+
+  .spark-node[data-active] .spark-node__label,
+  .spark-node:hover .spark-node__label,
+  .spark-node:focus-visible .spark-node__label {
+    fill: color-mix(in srgb, var(--pillar) 78%, #1f2a33 22%);
+    opacity: 1;
+  }
+
+  .spark-node:focus-visible .spark-node__chip-bg {
+    stroke-width: 1.5;
+  }
+
+  .spark-sketch__legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 0.75rem;
+    max-width: 34rem;
+  }
+
+  .spark-pill {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    font: 500 0.8rem/1 "Poppins", system-ui, sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
+  }
+
+  .spark-pill__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--pillar) 78%, white 22%);
+    display: inline-block;
+  }
+
+  .spark-pill:hover,
+  .spark-pill:focus-visible,
+  .spark-pill[data-active] {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--pillar) 40%, var(--border) 60%);
+    background: #fff;
+    outline: none;
+  }
+
+  @keyframes sparkBreath {
+    0%, 100% {
+      opacity: 0.72;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spark-node__segment {
+      animation: none;
+    }
+
+    .spark-node__segment,
+    .spark-node__chip,
+    .spark-node__chip-bg,
+    .spark-node__label,
+    .spark-pill {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .spark-sketch__frame {
+      padding: 0.75rem;
+      border-radius: 8px;
+    }
+
+    .spark-node__label {
+      font-size: 11px;
+    }
+
+    .spark-sketch__legend {
+      gap: 0.45rem 0.5rem;
+    }
+
+    .spark-pill {
+      font-size: 0.75rem;
+      padding: 0.42rem 0.68rem;
+    }
+  }
+</style>

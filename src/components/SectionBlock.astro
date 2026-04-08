@@ -1,0 +1,29 @@
+---
+const {
+  id,
+  eyebrow,
+  title,
+  intro,
+  centered = false,
+  narrow = false,
+  surface = false,
+  className = "",
+} = Astro.props;
+---
+
+<section id={id} class:list={["section", className]}>
+  <div class:list={["container", narrow && "container-narrow"]}>
+    <div class:list={[surface && "content-panel"]}>
+      {
+        (eyebrow || title || intro) && (
+          <div class:list={["section-head", centered && "section-head-center"]}>
+            {eyebrow && <p class="eyebrow mono-label">{eyebrow}</p>}
+            {title && <h2 class="section-title">{title}</h2>}
+            {intro && <p class="lede section-intro">{intro}</p>}
+          </div>
+        )
+      }
+      <slot />
+    </div>
+  </div>
+</section>

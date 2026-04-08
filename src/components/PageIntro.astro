@@ -1,0 +1,32 @@
+---
+const {
+  eyebrow = "Northern Spark Business Solutions",
+  title,
+  description,
+  supportingPoints = [],
+} = Astro.props;
+
+const introHighlights = supportingPoints.filter(Boolean).slice(0, 3);
+---
+
+<section class="section page-intro">
+  <div class="container">
+    <div class="page-intro-panel">
+      <div class="page-intro-copy">
+        <p class="eyebrow mono-label">{eyebrow}</p>
+        <h1 class="page-title page-intro-title">{title}</h1>
+        <p class="lede page-intro-text">{description}</p>
+      </div>
+
+      {
+        introHighlights.length > 0 && (
+          <div class="page-intro-support-row">
+            <ul class="page-intro-support" aria-label="Page introduction highlights">
+              {introHighlights.map((point) => <li>{point}</li>)}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

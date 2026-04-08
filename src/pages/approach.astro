@@ -1,0 +1,220 @@
+---
+import CTASection from "../components/CTASection.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+import SparkModelDiagram from "../components/SparkModelDiagram.astro";
+import StructuralFirstComparisonDiagram from "../components/StructuralFirstComparisonDiagram.astro";
+
+const sparkPillars = [
+  {
+    title: "Social",
+    definition: "Relationships, trust, communication patterns, and practical coordination.",
+    signals: ["Coordination depends on extra repair work", "Trust and connection weaken under pressure"],
+    impact: "Weak Social conditions isolate teams and slow execution.",
+  },
+  {
+    title: "Purpose",
+    definition: "Role meaning, strategic clarity, and direction of effort.",
+    signals: ["Teams lose clarity about priorities", "Meaning and direction become harder to hold"],
+    impact: "Weak Purpose conditions create drift and decision inconsistency.",
+  },
+  {
+    title: "Achievement",
+    definition: "The conditions that support momentum, progress, and follow-through.",
+    signals: ["Progress becomes hard to verify", "Accomplishment feels less stable"],
+    impact: "Weak Achievement conditions reduce momentum and confidence.",
+  },
+  {
+    title: "Risk",
+    definition: "Challenge, psychological safety, and the ability to test ideas without fear-based hesitation.",
+    signals: ["Experimentation depends on personal cover instead of shared safety", "People brace instead of challenging assumptions openly"],
+    impact: "Weak Risk conditions suppress voice, weaken learning, and increase burnout exposure.",
+  },
+  {
+    title: "Knowledge",
+    definition: "How information, guidance, context, and decision logic are shared.",
+    signals: ["Guidance is scattered", "Decision logic is hard to apply consistently"],
+    impact: "Weak Knowledge conditions create confusion and repeated errors.",
+  },
+];
+
+const operatingSequence = [
+  {
+    step: "01",
+    title: "Discovery",
+    body: "Low-disruption assessment clarifies pressures, strengths, and structural signals before change begins.",
+  },
+  {
+    step: "02",
+    title: "Design",
+    body: "Findings are translated into clearer expectations, workflows, supports, and intervention priorities the business can actually use.",
+  },
+  {
+    step: "03",
+    title: "Integration",
+    body: "Changes move into practice with realistic pacing, leadership reinforcement, and clear operating ownership.",
+  },
+  {
+    step: "04",
+    title: "Adaptation",
+    body: "Feedback loops and lightweight measurement keep the system responsive without restarting the work every quarter.",
+  },
+];
+---
+
+<MainLayout
+  title="Advocacy Approach | SPARK Framework, Employee Engagement & Retention Strategy | NSBS"
+  description="Learn how NSBS uses workforce consulting, employee engagement frameworks, retention strategy design, and leadership development to improve organizational performance through SPARK."
+>
+  <PageIntro
+    eyebrow="Advocacy Approach"
+    title="Business advocacy built around structure, clarity, and steadier workforce systems"
+    description="NSBS approaches workforce consulting as business advocacy. The work helps leaders strengthen employee engagement, retention strategy, leadership development, and organizational performance by redesigning the conditions underneath them."
+    supportingPoints={[
+      "Systems before symptoms",
+      "Structure before blanket training",
+      "Clarity before quick fixes",
+    ]}
+  />
+
+  <SectionBlock
+    eyebrow="Foundation"
+    title="Workforce Systems Architecture"
+    intro="Workforce Systems Architecture is the practice of reading how structure shapes employee engagement, retention, leadership capacity, and the lived experience of work."
+  >
+    <div class="split-layout">
+      <div class="narrative-block">
+        <p>
+          Retention, engagement, managerial stability, and workforce performance emerge from the
+          interaction of workload, clarity, accountability, handoffs, feedback loops, incentives,
+          and relational conditions.
+        </p>
+        <p>
+          NSBS helps organizations examine those mechanisms as a system rather than treating each
+          symptom as a separate problem. That makes the work more useful than standard consulting
+          when the real need is structural clarity and business advocacy around what the system is
+          actually producing.
+        </p>
+      </div>
+
+      <div class="content-panel">
+        <ul class="signal-list compact">
+          <li>Role definition and operating expectations</li>
+          <li>Decision logic and governance patterns</li>
+          <li>Managerial load and support capacity</li>
+          <li>Ramp pathways, communication flows, and feedback loops</li>
+        </ul>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Principle"
+    title="Structural First Principle"
+    intro="Before an organization asks behavior change, training, or coaching to solve a problem, the structure itself should be evaluated. Unlike traditional consulting and standard employee engagement strategies, NSBS starts with the design of the system itself."
+  >
+    <StructuralFirstComparisonDiagram />
+
+    <div class="card-grid two-up">
+      <article class="card">
+        <div class="card-title-row">
+          <h3>Why it matters</h3>
+          <p>
+            When the structure is misaligned, even skilled people expend energy compensating for it.
+            Training may help temporarily, but it does not remove the recurring conditions that are
+            generating strain, weakening retention strategy, and distorting organizational performance.
+          </p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-title-row">
+          <h3>What NSBS looks for</h3>
+          <p>
+            Gaps in clarity, unstable handoffs, conflicting incentives, overloaded managers,
+            unresolved ambiguity, and design choices that create avoidable drag.
+          </p>
+        </div>
+      </article>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Framework"
+    title="SPARK Model"
+    intro="SPARK functions as both a diagnostic lens and an operating system for redesign work. It also works as an employee engagement framework and a retention strategy model that leaders can use to connect people outcomes to business conditions."
+  >
+    <SparkModelDiagram />
+
+    <div class="card-grid spark-grid spark-grid--dense">
+      {sparkPillars.map((pillar) => (
+        <article class="card pillar-card pillar-card--dense">
+          <div class="card-title-row">
+            <h3>{pillar.title}</h3>
+            <p class="body small">{pillar.definition}</p>
+          </div>
+          <ul class="signal-list compact">
+            {pillar.signals.map((signal) => <li>{signal}</li>)}
+          </ul>
+          <p class="body small pillar-impact">{pillar.impact}</p>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Clarity"
+    title="Neuroinclusive Design"
+    intro="NSBS aims to reduce the kinds of friction that make work harder than it needs to be, especially when ambiguity and overload are quietly eroding engagement, leadership development, and retention."
+  >
+    <div class="split-layout">
+      <div class="narrative-block">
+        <p>
+          Better systems reduce ambiguity, overload, and harmful instability while creating enough
+          safety for people to ask questions, test ideas, and contribute more fully. They clarify
+          what matters, improve the flow of information, and create steadier operating conditions
+          for a wider range of people. That is good for dignity, and it is also good for
+          organizational performance.
+        </p>
+      </div>
+
+      <div class="content-panel">
+        <ul class="signal-list compact">
+          <li>Reduce ambiguity that forces people to infer too much</li>
+          <li>Lower overload created by poor workflow design</li>
+          <li>Support challenge and experimentation without unnecessary fear</li>
+          <li>Improve signal clarity around priorities and decisions</li>
+          <li>Strengthen stability so energy can go toward contribution</li>
+        </ul>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Operating sequence"
+    title="A practical sequence for turning structural insight into durable change"
+    intro="This is the strongest concept from the older methods framing, rebuilt for the current system. The sequence keeps diagnosis, redesign, implementation, and recalibration connected so the work stays clear, measurable, and business-relevant."
+  >
+    <div class="card-grid two-up">
+      {operatingSequence.map((phase) => (
+        <article class="card sequence-card sequence-card--panel">
+          <span class="sequence-step mono-label">{phase.step}</span>
+          <div class="card-title-row">
+            <h3>{phase.title}</h3>
+            <p>{phase.body}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <CTASection
+    title="Move from framework to action"
+    body="If you are seeing structural strain but need a clearer read on where to begin, NSBS can help translate SPARK into workforce consulting, employee engagement decisions, retention strategy, and leadership development priorities."
+    actionHref="/spark-framework"
+    actionLabel="Explore the System"
+    secondaryHref="/assessment"
+    secondaryLabel="Begin Assessment"
+  />
+</MainLayout>

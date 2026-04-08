@@ -1,0 +1,233 @@
+---
+const { currentPath = "/", variant = "mobile" } = Astro.props;
+
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/approach", label: "Approach" },
+  { href: "/services", label: "Services" },
+  { href: "/business-lab", label: "Business Lab" },
+  { href: "/insights", label: "Insights" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+const normalizePath = (path) => {
+  if (!path || path === "/") {
+    return "/";
+  }
+
+  return path.endsWith("/") ? path.slice(0, -1) : path;
+};
+
+const activePath = normalizePath(currentPath);
+const isMobile = variant === "mobile";
+const isBrandRail = variant === "rail-brand";
+const isNavRail = variant === "rail-nav";
+const brandImage = {
+  src: "/images/nsbs-logo.png",
+  width: 2968,
+  height: 2406,
+};
+---
+
+{
+  isMobile && (
+    <header class="site-header site-header--mobile" data-mobile-logo-header>
+      <div class="container header-inner">
+        <a
+          class="brand-link mobile-brand-link site-logo site-logo-visible"
+          href="/"
+          aria-label="Northern Spark Business Solutions home"
+          data-mobile-site-logo
+        >
+          <img
+            class="brand-image mobile-brand-image"
+            src={brandImage.src}
+            alt=""
+            width={brandImage.width}
+            height={brandImage.height}
+            decoding="async"
+            fetchpriority="high"
+          />
+        </a>
+
+        <details class="mobile-nav">
+          <summary class="mobile-nav-toggle" aria-label="Open site navigation">
+            <span class="sr-only">Open navigation</span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </summary>
+          <div class="mobile-nav-panel">
+            <nav aria-label="Mobile primary">
+              <ul>
+                {
+                  navItems.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        aria-current={normalizePath(item.href) === activePath ? "page" : undefined}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </nav>
+            <a class="button button-primary mobile-nav-cta" href="/contact">Start a Conversation</a>
+          </div>
+        </details>
+      </div>
+    </header>
+  )
+}
+
+{
+  isBrandRail && (
+    <div class="site-rail-shell site-rail-shell--brand">
+      <div class="site-rail-panel site-rail-panel--brand">
+        <a class="brand-link rail-brand-link" href="/" aria-label="Northern Spark Business Solutions home">
+          <img
+            class="brand-image rail-brand-image"
+            src={brandImage.src}
+            alt=""
+            width={brandImage.width}
+            height={brandImage.height}
+            decoding="async"
+          />
+        </a>
+      </div>
+    </div>
+  )
+}
+
+{
+  isMobile && (
+    <script is:inline>
+      (() => {
+        const mobileQuery = window.matchMedia("(max-width: 1023px)");
+        const header = document.querySelector("[data-mobile-logo-header]");
+        const logo = document.querySelector("[data-mobile-site-logo]");
+        const nav = header?.querySelector(".mobile-nav");
+
+        if (!header || !logo) {
+          return;
+        }
+
+        const threshold = 16;
+        const topLock = 24;
+        let lastY = window.scrollY;
+        let accumulatedDelta = 0;
+        let ticking = false;
+        let hidden = false;
+
+        const applyState = (nextHidden) => {
+          hidden = nextHidden;
+          header.classList.toggle("mobile-header-logo-hidden", nextHidden);
+          logo.classList.toggle("site-logo-hidden", nextHidden);
+          logo.classList.toggle("site-logo-visible", !nextHidden);
+        };
+
+        const syncAtTop = () => {
+          if (window.scrollY <= topLock || nav?.open || !mobileQuery.matches) {
+            accumulatedDelta = 0;
+            applyState(false);
+            lastY = window.scrollY;
+            return true;
+          }
+
+          return false;
+        };
+
+        const updateOnScroll = () => {
+          ticking = false;
+
+          if (syncAtTop()) {
+            return;
+          }
+
+          const currentY = window.scrollY;
+          const delta = currentY - lastY;
+
+          if (Math.abs(delta) < 2) {
+            return;
+          }
+
+          accumulatedDelta += delta;
+
+          if (accumulatedDelta > threshold && !hidden) {
+            applyState(true);
+            accumulatedDelta = 0;
+          } else if (accumulatedDelta < -threshold && hidden) {
+            applyState(false);
+            accumulatedDelta = 0;
+          }
+
+          lastY = currentY;
+        };
+
+        const onScroll = () => {
+          if (!mobileQuery.matches) {
+            if (hidden) {
+              applyState(false);
+            }
+            lastY = window.scrollY;
+            accumulatedDelta = 0;
+            return;
+          }
+
+          if (!ticking) {
+            ticking = true;
+            window.requestAnimationFrame(updateOnScroll);
+          }
+        };
+
+        const onViewportChange = () => {
+          accumulatedDelta = 0;
+          lastY = window.scrollY;
+          applyState(false);
+        };
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        mobileQuery.addEventListener("change", onViewportChange);
+        nav?.addEventListener("toggle", () => {
+          if (nav.open) {
+            applyState(false);
+          }
+        });
+
+        syncAtTop();
+      })();
+    </script>
+  )
+}
+
+{
+  isNavRail && (
+    <div class="site-rail-shell site-rail-shell--nav">
+      <div class="site-rail-panel site-rail-panel--nav">
+        <p class="small-label mono-label rail-label">Navigate</p>
+
+        <nav class="desktop-nav rail-nav" aria-label="Primary">
+          <ul>
+            {
+              navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    aria-current={normalizePath(item.href) === activePath ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <a class="button button-primary header-cta rail-cta" href="/contact">Start a Conversation</a>
+      </div>
+    </div>
+  )
+}

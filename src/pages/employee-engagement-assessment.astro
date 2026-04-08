@@ -1,0 +1,23 @@
+---
+const redirectTo = "/assessment";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${redirectTo}`} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="The NSBS employee engagement assessment has moved to the SPARK Level 1 Assessment. Redirecting to the updated route."
+    />
+    <title>SPARK Level 1 Assessment | NSBS</title>
+    <link rel="canonical" href={redirectTo} />
+  </head>
+  <body>
+    <p>
+      Redirecting to <a href={redirectTo}>SPARK Level 1 Assessment</a>.
+    </p>
+  </body>
+</html>

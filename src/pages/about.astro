@@ -1,0 +1,346 @@
+---
+import CTASection from "../components/CTASection.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+
+const principles = [
+  { label: "Dignity in the design of work" },
+  { label: "Clarity over performance theater" },
+  { label: "Sustainable performance over short-lived intensity" },
+  { label: "Systems thinking that respects lived human experience" },
+];
+---
+
+<MainLayout
+  title="About NSBS | Business Advocacy, Workforce Consulting & Organizational Performance"
+  description="Learn how NSBS combines business advocacy with workforce consulting, employee engagement insight, retention strategy thinking, and leadership development support."
+>
+  <PageIntro
+    eyebrow="About"
+    title="A business advocacy practice built to strengthen workforce systems and organizational performance"
+    description="NSBS exists because too many organizations are trying to solve structural problems with fragmented responses. A clearer systems lens creates better choices for leaders, stronger employee engagement and retention outcomes, and better conditions for the people doing the work."
+    supportingPoints={[
+      "Business advocacy posture",
+      "Warm but authoritative",
+      "Focused on sustainable performance",
+    ]}
+  />
+
+  <SectionBlock
+    eyebrow="Purpose"
+    title="Why NSBS exists"
+    intro="The practice was built around a simple conviction: when systems are better designed, people do not have to burn through themselves just to keep things functioning, and businesses do not have to accept poor engagement and retention as normal."
+  >
+    <div class="split-layout">
+      <div class="narrative-block">
+        <p>
+          NSBS helps leaders step back from surface noise and examine the deeper operating
+          conditions shaping turnover, employee engagement, leadership strain, and workforce performance.
+        </p>
+        <p>
+          The aim is not just improvement for its own sake. It is steadier, clearer, more humane
+          organizational performance supported by stronger retention strategy and more credible
+          workforce consulting.
+        </p>
+      </div>
+
+      <div class="content-panel">
+        <ul class="signal-list compact">
+          {principles.map((principle) => (
+            <li>{principle.label}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Founder"
+    title="From Experience to Systems Design"
+    intro="This work is grounded in lived experience, systems insight, and a structural-first view of workforce performance."
+  >
+    <div class="founder-layout">
+      <aside class="content-panel founder-visual-panel" aria-label="Founder perspective">
+        <div class="founder-visual-frame">
+          <p class="small-label mono-label">Founder perspective</p>
+          <div class="founder-image-shell">
+            <img
+              class="founder-image"
+              src="/images/scott-thompson-founder.jpg"
+              alt="Scott Thompson, founder of Northern Spark Business Solutions, a business advocacy and workforce consulting firm"
+              width="670"
+              height="779"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <p class="subhead founder-visual-title">
+            Clarity reduces friction. Structure supports people. Stability enables performance.
+          </p>
+        </div>
+
+        <div class="founder-visual-notes">
+          <p class="small-label mono-label">Built through</p>
+          <ul class="signal-list compact">
+            <li>Advocacy and family support work</li>
+            <li>Education and instructional design</li>
+            <li>Large-scale organizational systems</li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="founder-copy">
+        <header class="founder-header">
+          <h3 class="founder-name">Scott Thompson</h3>
+          <p class="body small founder-role">Founder, Northern Spark Business Solutions, L3C</p>
+        </header>
+
+        <div class="founder-block">
+          <p class="small-label mono-label">Perspective</p>
+          <p>
+            Workforce challenges are often treated as individual problems. In practice, they are
+            almost always system outcomes.
+          </p>
+          <p>
+            My work began by recognizing that disconnect and choosing to address it directly.
+          </p>
+          <p>
+            Across healthcare, education, human services, and organizational environments, I’ve
+            worked closely with people navigating real pressure: teams under strain, leaders making
+            difficult decisions, and systems that looked functional on the surface but were quietly
+            breaking down underneath.
+          </p>
+          <p>
+            In Southern Arizona, I worked alongside organizations supporting families, youth, and
+            individuals in complex situations, including roles with NAMI and as a Court Appointed
+            Special Advocate. In Maine, I continued that work with youth, families, and advocacy
+            organizations, supporting people in environments where stability and clarity were not
+            guaranteed.
+          </p>
+          <p>
+            I also spent years in education, teaching through COVID, helping build career and
+            technical education programs, and supporting students and families during one of the
+            most disruptive periods in recent history.
+          </p>
+        </div>
+
+        <div class="founder-block">
+          <p class="small-label mono-label">Why NSBS Exists</p>
+          <p>
+            At the same time, my work in instructional design and large-scale organizations,
+            including Fortune 500 environments, exposed a consistent pattern: performance challenges
+            were rarely about effort. They were about structure.
+          </p>
+          <p>
+            That realization became the foundation for everything NSBS does today. Organizations do
+            not struggle because people lack motivation. They struggle because the systems people
+            operate within are misaligned, unclear, or unstable.
+          </p>
+          <p>
+            The SPARK Model of Engagement was developed as a way to make those conditions visible,
+            measurable, and actionable. It is not a motivational framework. It is a structural
+            model for understanding how workforce systems actually function.
+          </p>
+        </div>
+
+        <div class="founder-block">
+          <p class="small-label mono-label">Business Advocacy in Practice</p>
+          <p>
+            NSBS was built on a simple shift in perspective: not consulting from the outside,
+            advocating for stronger systems from within.
+          </p>
+          <p>
+            In practice, that means identifying structural friction, strengthening clarity and
+            alignment, stabilizing workforce conditions, and supporting leaders in making better
+            system-level decisions.
+          </p>
+          <p>
+            As a veteran and someone living with complex PTSD and neurodivergence, I have
+            experienced firsthand how systems can either support or destabilize performance. That
+            perspective informs a core principle of this work: clarity reduces friction, structure
+            supports people, and stability enables performance.
+          </p>
+          <p>
+            Workforce outcomes are not accidental. They are designed. NSBS exists to help
+            organizations design them more intentionally.
+          </p>
+        </div>
+
+        <div class="founder-actions">
+          <a class="button button-secondary" href="/approach">Learn How NSBS Works</a>
+          <a class="text-link" href="/business-lab">Explore the Business Lab</a>
+        </div>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Positioning"
+    title="Business advocacy positioning"
+    intro="NSBS is presented as a serious consulting practice and business advocate rather than a personality-led platform."
+  >
+    <div class="card-grid two-up">
+      <article class="card">
+        <div class="card-title-row">
+          <h3>Strategic grounding</h3>
+          <p>
+            The work brings together systems thinking, workforce strategy, instructional design, and
+            practical organizational development with a clear emphasis on real operating conditions,
+            employee engagement, and measurable organizational performance.
+          </p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-title-row">
+          <h3>Consulting posture</h3>
+          <p>
+            The emphasis is on disciplined interpretation, thoughtful redesign, and partnership with
+            leaders who want more than a generic engagement, a generic leadership development
+            offer, or a motivational program.
+          </p>
+        </div>
+      </article>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    eyebrow="Commitment"
+    title="What the practice protects"
+    intro="The work is oriented toward healthier structures because structure shapes what people are asked to absorb, and structure also shapes what businesses are able to sustain."
+  >
+    <p>
+      NSBS is especially attentive to dignity, clarity, and sustainable performance. Systems
+      thinking matters here because it allows leaders to see how ambiguity, overload, misalignment,
+      and instability become normalized, and then redesign those conditions with intention. That is
+      the basis of business advocacy, workforce consulting, employee engagement support, and
+      retention strategy work that stays connected to actual business outcomes.
+    </p>
+  </SectionBlock>
+
+  <CTASection
+    title="If the mission feels aligned, start a conversation"
+    body="NSBS works best with leaders who want a thoughtful partner for workforce consulting, structural diagnosis, redesign, and steadier organizational performance."
+    actionHref="/contact"
+    actionLabel="Start the Conversation"
+  />
+</MainLayout>
+
+<style>
+  .founder-layout,
+  .founder-copy,
+  .founder-block,
+  .founder-visual-panel,
+  .founder-visual-frame,
+  .founder-visual-notes {
+    display: grid;
+    gap: var(--panel-gap);
+  }
+
+  .founder-layout {
+    gap: var(--grid-gap);
+  }
+
+  .founder-visual-panel {
+    align-content: start;
+    background: var(--color-surface);
+  }
+
+  .founder-visual-frame {
+    gap: 0.6rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .founder-mark {
+    display: none;
+  }
+
+  .founder-image-shell {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0)),
+      linear-gradient(135deg, rgba(47, 111, 94, 0.06), rgba(47, 111, 94, 0.01));
+  }
+
+  .founder-image-shell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(247, 250, 247, 0) 58%, rgba(247, 250, 247, 0.14) 100%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 34%);
+  }
+
+  .founder-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: saturate(0.92) contrast(1.02);
+  }
+
+  .founder-visual-title {
+    max-width: 18ch;
+  }
+
+  .founder-name {
+    margin: 0;
+    color: var(--text-strong);
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: var(--weight-medium);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .founder-role {
+    margin: 0;
+  }
+
+  .founder-header {
+    display: grid;
+    gap: 0.3rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .founder-block {
+    gap: 0.55rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .founder-block .small-label,
+  .founder-visual-notes .small-label {
+    margin-bottom: 0;
+  }
+
+  .founder-block p:last-child,
+  .founder-visual-notes p:last-child {
+    margin-bottom: 0;
+  }
+
+  .founder-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    align-items: center;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 960px) {
+    .founder-layout {
+      grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 1.15fr);
+      align-items: start;
+    }
+
+    .founder-visual-panel {
+      position: sticky;
+      top: clamp(1rem, 2vw, 1.5rem);
+    }
+  }
+</style>

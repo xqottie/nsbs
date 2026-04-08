@@ -1,0 +1,76 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+
+const contactEmail = "sthompson@northernsparkl3c.com";
+---
+
+<MainLayout
+  title="Start a Conversation | Workforce Consulting & Employee Engagement Support | NSBS"
+  description="Contact NSBS for workforce consulting, employee engagement support, retention strategy guidance, leadership development questions, and organizational performance conversations."
+>
+  <PageIntro
+    eyebrow="Contact"
+    title="Start a conversation about the business conditions shaping your workforce"
+    description="If your organization is carrying pressure that feels deeper than a single initiative can solve, this is a place to begin. NSBS can help frame workforce consulting, employee engagement, retention strategy, and leadership development questions in more practical business terms."
+    supportingPoints={[
+      "Simple and direct",
+      "Focused on context and outcomes",
+      "Designed to feel easy to start",
+    ]}
+  />
+
+  <SectionBlock
+    eyebrow="Reach out"
+    title="How to reach out"
+    intro="Share a little about the pressures you are seeing, the context you are working inside, or the workforce consulting, employee engagement, retention strategy, and leadership development questions you want help thinking through."
+  >
+    <div class="contact-grid">
+      <article class="content-panel contact-panel">
+        <div class="card-title-row">
+          <p class="small-label mono-label">Email</p>
+          <a class="contact-email" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+          <p class="body">
+            A straightforward note is enough. You do not need to have the whole problem framed in
+            advance. A few lines about employee engagement, retention, leadership strain, or
+            organizational performance are enough to start a useful conversation.
+          </p>
+        </div>
+      </article>
+
+      <article class="content-panel form-shell">
+        <div class="card-title-row">
+          <p class="small-label mono-label">Conversation request</p>
+          <form
+            class="contact-form"
+            action={`mailto:${contactEmail}`}
+            method="post"
+            enctype="text/plain"
+          >
+            <label class="field-group">
+              <span>Name</span>
+              <input type="text" name="name" placeholder="Your name" />
+            </label>
+
+            <label class="field-group">
+              <span>Email</span>
+              <input type="email" name="email" placeholder="name@organization.com" />
+            </label>
+
+            <label class="field-group">
+              <span>What is happening in the organization?</span>
+              <textarea
+                name="context"
+                rows="6"
+                placeholder="A few lines about the pressure, the pattern, or the question you want to discuss."
+              ></textarea>
+            </label>
+
+            <button class="button button-primary" type="submit">Start the Conversation</button>
+          </form>
+        </div>
+      </article>
+    </div>
+  </SectionBlock>
+</MainLayout>

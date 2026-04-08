@@ -1,0 +1,55 @@
+---
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/approach", label: "Approach" },
+  { href: "/services", label: "Services" },
+  { href: "/business-lab", label: "Business Lab" },
+  { href: "/insights", label: "Insights" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+const year = new Date().getFullYear();
+const contactEmail = "sthompson@northernsparkl3c.com";
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="footer-logo" href="/" aria-label="Northern Spark Business Solutions home">
+        <img
+          class="footer-logo-image"
+          src="/images/nsbs-logo.png"
+          alt=""
+          width="2968"
+          height="2406"
+          decoding="async"
+          loading="lazy"
+        />
+      </a>
+      <p class="body">
+        Northern Spark Business Solutions is a strategic consulting practice focused on
+        workforce systems architecture, structural redesign, and steadier organizational
+        performance.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="footer-heading subhead">Navigate</h2>
+      <nav aria-label="Footer">
+        <ul class="footer-nav">
+          {navItems.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+
+    <div>
+      <h2 class="footer-heading subhead">Contact</h2>
+      <a class="footer-contact" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+    </div>
+  </div>
+
+  <div class="container footer-meta">
+    <p class="meta">&copy; {year} Northern Spark Business Solutions. All rights reserved.</p>
+  </div>
+</footer>

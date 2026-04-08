@@ -1,0 +1,38 @@
+---
+import HeroSection from "../components/HeroSection.astro";
+import Level1Assessment from "../components/assessment/Level1Assessment.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout
+  title="SPARK Level 1 Assessment | Employee Engagement Assessment & Workforce Diagnostic | NSBS"
+  description="Take the NSBS SPARK Level 1 Assessment for a structured snapshot of employee engagement, retention conditions, and workforce performance across Social, Purpose, Achievement, Risk, and Knowledge."
+>
+  <HeroSection
+    eyebrow="SPARK Level 1 Assessment"
+    title="SPARK Level 1 Assessment"
+    body="A fast, structured snapshot of workforce conditions. Use this assessment to explore how your organization is functioning across the five SPARK pillars. The results offer a high-level view of current strengths, friction points, and where deeper structural analysis may be needed."
+    actions={[
+      { href: "#assessment-tool", label: "Start Assessment" },
+      { href: "/spark-framework", label: "Explore the System", variant: "secondary" },
+    ]}
+  >
+    <p class="eyebrow mono-label">Assessment trust block</p>
+    <h2 class="subhead hero-aside-title">Built to orient leaders quickly without pretending to replace full diagnosis.</h2>
+    <ul class="signal-list compact">
+      <li>About 10 minutes</li>
+      <li>20 questions across five SPARK pillars</li>
+      <li>Structured for improvement, not judgment</li>
+      <li>High-level snapshot, not a full diagnosis</li>
+    </ul>
+    <p class="body small hero-aside-note">
+      Responses stay in the browser for the current session unless you reset them.
+    </p>
+  </HeroSection>
+
+  <section class="section" id="assessment-tool">
+    <div class="container">
+      <Level1Assessment />
+    </div>
+  </section>
+</MainLayout>

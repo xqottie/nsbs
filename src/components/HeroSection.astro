@@ -1,0 +1,53 @@
+---
+const {
+  eyebrow = "Northern Spark Business Solutions",
+  title,
+  body,
+  actions = [],
+  titleTag = "h1",
+  className = "",
+} = Astro.props;
+
+const HeadingTag = titleTag;
+const hasAside = Astro.slots.has("default");
+---
+
+<section class:list={["section", "hero-section", className]}>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow mono-label">{eyebrow}</p>
+      <HeadingTag class="display hero-title">{title}</HeadingTag>
+      <p class="lede hero-body">{body}</p>
+
+      {
+        actions.length > 0 && (
+          <div class="button-row">
+            {actions.map((action) => (
+              <a
+                class:list={[
+                  "button",
+                  action.variant === "secondary"
+                    ? "button-secondary"
+                    : action.variant === "ghost"
+                      ? "button-ghost"
+                      : "button-primary",
+                ]}
+                href={action.href}
+              >
+                {action.label}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    {
+      hasAside && (
+        <aside class="hero-aside content-panel">
+          <slot />
+        </aside>
+      )
+    }
+  </div>
+</section>

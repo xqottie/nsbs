@@ -1,0 +1,81 @@
+---
+import BackgroundField from "../components/BackgroundField.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import "../styles/global.css";
+
+const {
+  title = "Northern Spark Business Solutions | Workforce Systems Architecture",
+  description = "NSBS combines business advocacy with workforce consulting to improve employee engagement, retention strategy, leadership development, and organizational performance through applied Business Lab tools.",
+} = Astro.props;
+
+const pathname = Astro.url.pathname;
+
+const backgroundIntensity = (() => {
+  if (pathname === "/business-lab") {
+    return "elevated";
+  }
+
+  if (pathname === "/" || pathname === "/services" || pathname === "/workforce-consulting") {
+    return "balanced";
+  }
+
+  return "quiet";
+})();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Geist+Mono:wght@400;500&family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+    <meta name="theme-color" content="#F7F9FB" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="site-shell">
+      <BackgroundField intensity={backgroundIntensity} />
+      <div class="site-shell__inner">
+        <SiteHeader currentPath={pathname} variant="mobile" />
+
+        <div class="site-grid">
+          <aside class="left-rail" aria-label="Brand rail">
+            <div class="left-rail-inner">
+              <SiteHeader currentPath={pathname} variant="rail-brand" />
+            </div>
+          </aside>
+
+          <div class="site-content-column">
+            <div class="content-scroll">
+              <main id="main-content" class="site-main">
+                <slot />
+              </main>
+              <SiteFooter />
+            </div>
+          </div>
+
+          <aside class="right-rail" aria-label="Primary navigation rail">
+            <div class="right-rail-inner">
+              <SiteHeader currentPath={pathname} variant="rail-nav" />
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
