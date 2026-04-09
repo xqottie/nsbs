@@ -2,6 +2,7 @@
 import observatoryModel from "../../data/observatory-model.json";
 import {
   PILLAR_ORDER,
+  axisPoint,
   escapeJsonForScript,
   formatWholeNumber,
   getRiskBand,
@@ -32,6 +33,19 @@ const pillarColorVars: Record<PillarName, string> = {
   Risk: "--spark-risk",
   Knowledge: "--spark-knowledge",
 };
+
+const radarPillars = PILLAR_ORDER.map((pillar, index) => ({
+  pillar,
+  pillClass: "obs-pill-score obs-pill-score--" + pillarKey(pillar),
+  segmentClass: "obs-ring-segment obs-ring-segment--" + pillarKey(pillar),
+  segmentStyle: "--pillar-color: var(" + pillarColorVars[pillar] + ");",
+  labelPathId: "obs-segment-path-" + pillarKey(pillar),
+  labelClass: "obs-pillar-label obs-pillar-label--" + pillarKey(pillar),
+  segmentPath: wedgePath(index),
+  labelPath: labelArcPath(index),
+  axisPoint: axisPoint(index, 100),
+  nodePoint: axisPoint(index, scoreMap[pillar]),
+}));
 ---
 
 <section class="section obs-tool-section" id="observatory-tool" aria-labelledby="observatory-tool-title">
@@ -73,7 +87,7 @@ const pillarColorVars: Record<PillarName, string> = {
             </p>
           </div>
 
-          <span class={`obs-risk-band obs-risk-band--${compositeRisk.band}`} data-composite-band>
+          <span class={"obs-risk-band obs-risk-band--" + compositeRisk.band} data-composite-band>
             {compositeRisk.label}
           </span>
           <span class="obs-chip" data-composite-confidence>
@@ -91,10 +105,10 @@ const pillarColorVars: Record<PillarName, string> = {
             </div>
 
             <div class="obs-pill-score-row" aria-label="Pillar scores">
-              {PILLAR_ORDER.map((pillar) => (
-                <span class={`obs-pill-score obs-pill-score--${pillarKey(pillar)}`}>
-                  <strong>{pillar[0]}</strong>
-                  <span>{formatWholeNumber(model.pillars[pillar].score)}</span>
+              {radarPillars.map((item) => (
+                <span class={item.pillClass}>
+                  <strong>{item.pillar[0]}</strong>
+                  <span>{formatWholeNumber(model.pillars[item.pillar].score)}</span>
                 </span>
               ))}
             </div>
@@ -112,25 +126,22 @@ const pillarColorVars: Record<PillarName, string> = {
               </title>
 
               <g class="obs-ring-segments" aria-label="Selectable SPARK pillar segments">
-                {PILLAR_ORDER.map((pillar, index) => (
+                {radarPillars.map((item) => (
                   <path
-                    d={wedgePath(index)}
-                    class={`obs-ring-segment obs-ring-segment--${pillarKey(pillar)}`}
-                    data-pillar-button={pillar}
-                    style={`--pillar-color: var(${pillarColorVars[pillar]});`}
+                    d={item.segmentPath}
+                    class={item.segmentClass}
+                    data-pillar-button={item.pillar}
+                    style={item.segmentStyle}
                     role="button"
                     tabindex="0"
-                    aria-pressed={pillar === defaultPillar ? "true" : "false"}
+                    aria-pressed={item.pillar === defaultPillar ? "true" : "false"}
                   />
                 ))}
               </g>
 
               <defs>
-                {PILLAR_ORDER.map((pillar, index) => (
-                  <path
-                    id={`obs-segment-path-${pillarKey(pillar)}`}
-                    d={labelArcPath(index)}
-                  />
+                {radarPillars.map((item) => (
+                  <path id={item.labelPathId} d={item.labelPath} />
                 ))}
               </defs>
 
@@ -142,29 +153,15 @@ const pillarColorVars: Record<PillarName, string> = {
               </g>
 
               <g class="obs-radar-axes">
-                {PILLAR_ORDER.map((pillar, index) => {
-                  const endpoint = [
-                    polygonPoints(
-                      PILLAR_ORDER.reduce(
-                        (scores, scorePillar) => {
-                          scores[scorePillar] = scorePillar === pillar ? 100 : 0;
-                          return scores;
-                        },
-                        {} as Record<PillarName, number>,
-                      ),
-                    ).split(" ")[index],
-                  ][0].split(",");
-
-                  return (
-                    <line
-                      x1="180"
-                      y1="180"
-                      x2={endpoint[0]}
-                      y2={endpoint[1]}
-                      data-pentagon-axis={pillar}
-                    />
-                  );
-                })}
+                {radarPillars.map((item) => (
+                  <line
+                    x1="180"
+                    y1="180"
+                    x2={item.axisPoint.x.toFixed(1)}
+                    y2={item.axisPoint.y.toFixed(1)}
+                    data-pentagon-axis={item.pillar}
+                  />
+                ))}
               </g>
 
               <polygon
@@ -174,31 +171,25 @@ const pillarColorVars: Record<PillarName, string> = {
               />
 
               <g class="obs-radar-nodes">
-                {PILLAR_ORDER.map((pillar, index) => {
-                  const point = polygonPoints(scoreMap).split(" ")[index].split(",");
-                  return (
-                    <circle
-                      cx={point[0]}
-                      cy={point[1]}
-                      r="4.5"
-                      data-pentagon-node={pillar}
-                    />
-                  );
-                })}
+                {radarPillars.map((item) => (
+                  <circle
+                    cx={item.nodePoint.x.toFixed(1)}
+                    cy={item.nodePoint.y.toFixed(1)}
+                    r="4.5"
+                    data-pentagon-node={item.pillar}
+                  />
+                ))}
               </g>
 
               <g class="obs-segment-labels" aria-hidden="true">
-                {PILLAR_ORDER.map((pillar) => (
-                  <text
-                    class={`obs-pillar-label obs-pillar-label--${pillarKey(pillar)}`}
-                    data-pillar-label={pillar}
-                  >
+                {radarPillars.map((item) => (
+                  <text class={item.labelClass} data-pillar-label={item.pillar}>
                     <textPath
-                      href={`#obs-segment-path-${pillarKey(pillar)}`}
+                      href={"#" + item.labelPathId}
                       startOffset="50%"
                       text-anchor="middle"
                     >
-                      {pillar.toUpperCase()}
+                      {item.pillar.toUpperCase()}
                     </textPath>
                   </text>
                 ))}
@@ -309,7 +300,7 @@ const pillarColorVars: Record<PillarName, string> = {
                 <div class="obs-metric-value-row">
                   <p class="obs-metric-value">{metric.value}</p>
                   {metric.unit && <p class="obs-metric-unit">{metric.unit}</p>}
-                  <span class={`obs-metric-status obs-metric-status--${metric.status.toLowerCase()}`}>
+                  <span class={"obs-metric-status obs-metric-status--" + metric.status.toLowerCase()}>
                     {metric.status}
                   </span>
                 </div>
@@ -874,7 +865,8 @@ const pillarColorVars: Record<PillarName, string> = {
 
   .obs-feed-pillar {
     padding: 0.18rem 0.46rem;
-    color: transparent;
+    color: #fff;
+    border-color: transparent;
     border-radius: 999px;
   }
 

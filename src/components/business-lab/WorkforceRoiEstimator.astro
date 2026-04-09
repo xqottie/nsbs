@@ -1,0 +1,1006 @@
+---
+import {
+  ROI_DEFAULTS,
+  ROI_SCENARIO_ORDER,
+  ROI_SCENARIOS,
+  calculateRoi,
+  compareRoiScenarios,
+  formatCompactCurrency,
+  formatCurrency,
+  formatMonths,
+  formatMultiple,
+  formatPercent,
+} from "./roiEstimatorLogic";
+
+const initialResult = calculateRoi(ROI_DEFAULTS);
+const scenarioResults = compareRoiScenarios(ROI_DEFAULTS);
+const breakdown = [
+  {
+    key: "turnoverSavings",
+    label: "Turnover Savings",
+    helper: "Estimated avoided replacement cost from fewer departures.",
+    value: initialResult.components.turnoverSavings,
+  },
+  {
+    key: "productivityValue",
+    label: "Productivity Gain",
+    helper: "Estimated value from stronger day-to-day output.",
+    value: initialResult.components.productivityValue,
+  },
+  {
+    key: "absenteeSavings",
+    label: "Absenteeism Savings",
+    helper: "Estimated recovered value from fewer lost days.",
+    value: initialResult.components.absenteeSavings,
+  },
+  {
+    key: "disengagementSavings",
+    label: "Disengagement Recovery",
+    helper: "Estimated value from reduced friction and performance drag.",
+    value: initialResult.components.disengagementSavings,
+  },
+] as const;
+const scenarioRows = ROI_SCENARIO_ORDER.map((scenario) => ({
+  key: scenario,
+  label: ROI_SCENARIOS[scenario].label,
+  shortLabel:
+    scenario === "conservative" ? "Con" : scenario === "typical" ? "Typ" : "Agg",
+  value: scenarioResults[scenario].totals.totalValue,
+}));
+const maxScenarioValue = Math.max(...scenarioRows.map((item) => item.value), 1);
+---
+
+<section class="section roi-tool-section" id="roi-estimator" aria-labelledby="roi-section-title">
+  <div class="container">
+    <div class="roi-section-head">
+      <div class="roi-section-copy">
+        <p class="small-label mono-label">Financial projection</p>
+        <h2 id="roi-section-title">Workforce Engagement ROI Estimator</h2>
+        <p class="body">
+          Estimate the annual value of improving engagement, retention, and system design using the
+          same directional assumptions as the live observatory tool.
+        </p>
+      </div>
+    </div>
+
+    <section class="roi-section-shell" data-roi-estimator aria-labelledby="roi-results-title">
+      <div class="roi-main-grid">
+        <form class="card roi-panel roi-input-card" data-roi-form novalidate>
+          <header class="roi-panel-head">
+            <div class="roi-panel-head-copy">
+              <p class="small-label mono-label">Inputs</p>
+              <h3>Model your organization</h3>
+            </div>
+            <p class="body small">
+              Adjust the organization profile and sensitivity assumptions to estimate directional
+              annual value.
+            </p>
+          </header>
+
+          <div class="roi-field-grid">
+            <div class="roi-field">
+              <label for="roi-workforce-size">Workforce Size</label>
+              <div class="roi-input-shell">
+                <input
+                  id="roi-workforce-size"
+                  name="workforceSize"
+                  type="number"
+                  inputmode="numeric"
+                  min="1"
+                  max="1000000"
+                  step="1"
+                  value={ROI_DEFAULTS.workforceSize}
+                />
+              </div>
+              <p class="roi-field-note">Employees included in the estimate.</p>
+            </div>
+
+            <div class="roi-field">
+              <label for="roi-average-salary">Average Salary</label>
+              <div class="roi-input-shell roi-input-shell-currency">
+                <span aria-hidden="true">$</span>
+                <input
+                  id="roi-average-salary"
+                  name="averageSalary"
+                  type="number"
+                  inputmode="decimal"
+                  min="10000"
+                  max="5000000"
+                  step="1000"
+                  value={ROI_DEFAULTS.averageSalary}
+                />
+              </div>
+              <p class="roi-field-note">Average annual base compensation per employee.</p>
+            </div>
+
+            <div class="roi-field roi-field-range">
+              <div class="roi-field-head">
+                <label for="roi-turnover-rate">Annual Turnover Rate</label>
+                <output for="roi-turnover-rate" data-roi-display="turnoverRate">
+                  {formatPercent(ROI_DEFAULTS.turnoverRate)}
+                </output>
+              </div>
+              <input
+                id="roi-turnover-rate"
+                name="turnoverRate"
+                class="roi-range-input"
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={ROI_DEFAULTS.turnoverRate}
+              />
+              <div class="roi-range-meta" aria-hidden="true">
+                <span>0%</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <div class="roi-field roi-field-range">
+              <div class="roi-field-head">
+                <label for="roi-replacement-cost-rate">Replacement Cost Rate</label>
+                <output for="roi-replacement-cost-rate" data-roi-display="replacementCostRate">
+                  {formatPercent(ROI_DEFAULTS.replacementCostRate)}
+                </output>
+              </div>
+              <input
+                id="roi-replacement-cost-rate"
+                name="replacementCostRate"
+                class="roi-range-input"
+                type="range"
+                min="20"
+                max="100"
+                step="1"
+                value={ROI_DEFAULTS.replacementCostRate}
+              />
+              <div class="roi-range-meta" aria-hidden="true">
+                <span>20%</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <div class="roi-field">
+              <label for="roi-absentee-days">Absentee Days per Employee</label>
+              <div class="roi-input-shell">
+                <input
+                  id="roi-absentee-days"
+                  name="absenteeDaysPerEmployee"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  max="60"
+                  step="0.5"
+                  value={ROI_DEFAULTS.absenteeDaysPerEmployee}
+                />
+              </div>
+              <p class="roi-field-note">Average annual days absent per employee.</p>
+            </div>
+
+            <div class="roi-field roi-field-range">
+              <div class="roi-field-head">
+                <label for="roi-engagement-improvement">Engagement Improvement</label>
+                <output for="roi-engagement-improvement" data-roi-display="engagementImprovement">
+                  {formatPercent(ROI_DEFAULTS.engagementImprovement)}
+                </output>
+              </div>
+              <input
+                id="roi-engagement-improvement"
+                name="engagementImprovement"
+                class="roi-range-input"
+                type="range"
+                min="0"
+                max="20"
+                step="1"
+                value={ROI_DEFAULTS.engagementImprovement}
+              />
+              <div class="roi-range-meta" aria-hidden="true">
+                <span>0%</span>
+                <span>20%</span>
+              </div>
+            </div>
+
+            <div class="roi-field roi-field-scenario">
+              <fieldset>
+                <legend>Scenario</legend>
+                <div class="roi-segmented" role="radiogroup" aria-label="Scenario">
+                  {ROI_SCENARIO_ORDER.map((scenario) => (
+                    <>
+                      <input
+                        id={"roi-scenario-" + scenario}
+                        class="roi-segmented-input"
+                        type="radio"
+                        name="scenario"
+                        value={scenario}
+                        checked={scenario === ROI_DEFAULTS.scenario}
+                      />
+                      <label class="roi-segmented-pill" for={"roi-scenario-" + scenario}>
+                        <strong>{ROI_SCENARIOS[scenario].label}</strong>
+                        <span>
+                          {
+                            scenario === "conservative"
+                              ? "Lower sensitivity"
+                              : scenario === "typical"
+                                ? "Balanced estimate"
+                                : "Upper bound"
+                          }
+                        </span>
+                      </label>
+                    </>
+                  ))}
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="roi-field">
+              <label for="roi-program-cost">Optional Program Cost</label>
+              <div class="roi-input-shell roi-input-shell-currency">
+                <span aria-hidden="true">$</span>
+                <input
+                  id="roi-program-cost"
+                  name="programCost"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  max="100000000"
+                  step="1000"
+                  placeholder="Enter cost to view ROI multiple"
+                />
+              </div>
+              <p class="roi-field-note">
+                Include expected program cost to estimate ROI multiple and payback period.
+              </p>
+            </div>
+          </div>
+
+          <details class="roi-advanced" data-roi-details>
+            <summary aria-expanded="false">Advanced assumptions</summary>
+            <div class="roi-advanced-body">
+              <div class="roi-advanced-grid">
+                <div class="roi-field">
+                  <label for="roi-workdays-per-year">Workdays per Year</label>
+                  <div class="roi-input-shell">
+                    <input
+                      id="roi-workdays-per-year"
+                      name="workdaysPerYear"
+                      type="number"
+                      inputmode="numeric"
+                      min="200"
+                      max="365"
+                      step="1"
+                      value={ROI_DEFAULTS.workdaysPerYear}
+                    />
+                  </div>
+                </div>
+
+                <div class="roi-field">
+                  <label for="roi-absentee-cost-multiplier">Absentee Cost Multiplier</label>
+                  <div class="roi-input-shell">
+                    <input
+                      id="roi-absentee-cost-multiplier"
+                      name="absenteeCostMultiplier"
+                      type="number"
+                      inputmode="decimal"
+                      min="0.25"
+                      max="3"
+                      step="0.05"
+                      value={ROI_DEFAULTS.absenteeCostMultiplier}
+                    />
+                  </div>
+                </div>
+
+                <div class="roi-field">
+                  <label for="roi-impact-cap-adjustment">Impact Cap Adjustment</label>
+                  <div class="roi-input-shell roi-input-shell-suffix">
+                    <input
+                      id="roi-impact-cap-adjustment"
+                      name="impactCapAdjustment"
+                      type="number"
+                      inputmode="numeric"
+                      min="50"
+                      max="200"
+                      step="5"
+                      value={ROI_DEFAULTS.impactCapAdjustment}
+                    />
+                    <span aria-hidden="true">%</span>
+                  </div>
+                </div>
+
+                <div class="roi-field roi-toggle-field">
+                  <div class="roi-toggle-copy">
+                    <label for="roi-realtime-updates">Real-time updates</label>
+                    <p>
+                      Pause automatic recalculation if you want to review changes before refreshing
+                      the results.
+                    </p>
+                  </div>
+
+                  <label class="roi-switch" for="roi-realtime-updates">
+                    <input
+                      id="roi-realtime-updates"
+                      name="realtimeUpdates"
+                      type="checkbox"
+                      checked={ROI_DEFAULTS.realtimeUpdates}
+                    />
+                    <span class="roi-switch-track" aria-hidden="true"></span>
+                    <span class="roi-switch-label" data-roi-realtime-state>On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="roi-input-actions">
+            <button class="button button-primary" type="submit">Calculate Impact</button>
+            <button class="button button-ghost" type="button" data-roi-reset>Reset defaults</button>
+          </div>
+
+          <p class="roi-live-note body small" data-roi-live-note>
+            Updating live as inputs change.
+          </p>
+        </form>
+
+        <section class="card roi-panel roi-results-card" aria-live="polite" aria-labelledby="roi-results-title">
+          <header class="roi-panel-head roi-results-head">
+            <div class="roi-panel-head-copy">
+              <p class="small-label mono-label">Results</p>
+              <h3 id="roi-results-title">Directional annual impact</h3>
+            </div>
+
+            <div class="roi-scenario-chip" data-roi-scenario-chip>
+              <span>Scenario</span>
+              <strong>{initialResult.scenario.label}</strong>
+            </div>
+          </header>
+
+          <div class="roi-summary-grid">
+            <article class="roi-kpi-card roi-kpi-card-primary">
+              <p class="roi-kpi-label">Estimated Annual Value</p>
+              <p class="roi-kpi-value" data-roi-output="totalValue" data-roi-format="currency">
+                {formatCurrency(initialResult.totals.totalValue)}
+              </p>
+              <p class="roi-kpi-note">
+                Directional annual value based on the assumptions currently selected.
+              </p>
+            </article>
+
+            <article class="roi-kpi-card">
+              <p class="roi-kpi-label">Value per Employee</p>
+              <p class="roi-kpi-value" data-roi-output="valuePerEmployee" data-roi-format="currency">
+                {formatCurrency(initialResult.totals.valuePerEmployee)}
+              </p>
+              <p class="roi-kpi-note">
+                Average annual value created per employee in the modeled organization.
+              </p>
+            </article>
+
+            <article class="roi-kpi-card" data-roi-program-card="roiMultiple" hidden>
+              <p class="roi-kpi-label">ROI Multiple</p>
+              <p class="roi-kpi-value" data-roi-output="roiMultiple" data-roi-format="multiple">
+                {formatMultiple(initialResult.totals.roiMultiple)}
+              </p>
+              <p class="roi-kpi-note">Total estimated value divided by the optional program cost.</p>
+            </article>
+
+            <article class="roi-kpi-card" data-roi-program-card="paybackMonths" hidden>
+              <p class="roi-kpi-label">Payback Period</p>
+              <p class="roi-kpi-value" data-roi-output="paybackMonths" data-roi-format="months">
+                {formatMonths(initialResult.totals.paybackMonths)}
+              </p>
+              <p class="roi-kpi-note">
+                Approximate time to recover the optional program cost from projected annual value.
+              </p>
+            </article>
+          </div>
+
+          <p class="roi-program-note body small" data-roi-program-note>
+            Add a program cost to estimate ROI multiple and payback period.
+          </p>
+
+          <div class="roi-breakdown-grid">
+            {breakdown.map((item) => (
+              <article class={"roi-breakdown-card roi-breakdown-card-" + item.key}>
+                <div class="roi-breakdown-top">
+                  <p class="roi-breakdown-label">{item.label}</p>
+                  <p
+                    class="roi-breakdown-value"
+                    data-roi-output={item.key}
+                    data-roi-format="currency"
+                  >
+                    {formatCurrency(item.value)}
+                  </p>
+                </div>
+                <svg class="roi-mini-chart" viewBox="0 0 100 28" aria-hidden="true" focusable="false">
+                  <polyline
+                    points="8,24 29,22 50,19 71,21 92,18"
+                    data-roi-sparkline={item.key}
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></polyline>
+                </svg>
+                <p class="roi-breakdown-helper">{item.helper}</p>
+                <p class="roi-breakdown-share" data-roi-share={item.key}>
+                  {formatPercent((item.value / initialResult.totals.totalValue) * 100)} of total value
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div class="roi-charts-grid">
+            <article class="roi-chart-card">
+              <header class="roi-chart-head">
+                <div class="roi-chart-head-copy">
+                  <p class="small-label mono-label">Chart</p>
+                  <h4>Value creation breakdown</h4>
+                </div>
+                <p
+                  class="roi-chart-total"
+                  data-roi-output="totalValueCompact"
+                  data-roi-format="compactCurrency"
+                >
+                  {formatCompactCurrency(initialResult.totals.totalValue)}
+                </p>
+              </header>
+
+              <div class="roi-stacked-bar" aria-hidden="true">
+                {breakdown.map((item) => (
+                  <span
+                    class={"roi-stacked-segment roi-stacked-segment-" + item.key}
+                    data-roi-breakdown-segment={item.key}
+                    style={"--segment-share:" + item.value / initialResult.totals.totalValue + ";"}
+                  ></span>
+                ))}
+              </div>
+
+              <ul class="roi-chart-legend" aria-hidden="true">
+                {breakdown.map((item) => (
+                  <li>
+                    <span class={"roi-chart-swatch roi-chart-swatch-" + item.key}></span>
+                    <span>{item.label}</span>
+                    <strong data-roi-breakdown-legend-value={item.key}>
+                      {formatCurrency(item.value)}
+                    </strong>
+                  </li>
+                ))}
+              </ul>
+
+              <p class="sr-only" data-roi-breakdown-summary>
+                {formatCurrency(initialResult.components.turnoverSavings)} from turnover, {formatCurrency(
+                  initialResult.components.productivityValue,
+                )} from productivity, {formatCurrency(initialResult.components.absenteeSavings)} from absenteeism, and {formatCurrency(initialResult.components.disengagementSavings)} from disengagement recovery.
+              </p>
+            </article>
+
+            <article class="roi-chart-card roi-chart-card-scenario">
+              <header class="roi-chart-head roi-chart-head-scenario">
+                <div class="roi-chart-head-copy">
+                  <p class="small-label mono-label">Chart</p>
+                  <h4>Scenario comparison</h4>
+                  <p class="body small">
+                    All three scenarios recalculate using your current inputs.
+                  </p>
+                </div>
+              </header>
+
+              <div class="roi-scenario-plot" aria-hidden="true">
+                <div class="roi-scenario-baseline"></div>
+                <div class="roi-scenario-chart">
+                  {scenarioRows.map((scenario) => (
+                    <div
+                      class:list={["roi-scenario-column-card", scenario.key === initialResult.scenario.key && "is-selected"]}
+                      data-roi-scenario-bar={scenario.key}
+                      data-roi-selected={scenario.key === initialResult.scenario.key ? "true" : "false"}
+                      aria-current={scenario.key === initialResult.scenario.key ? "true" : "false"}
+                    >
+                      <div class="roi-scenario-column-stack">
+                        <p class="roi-scenario-value" data-roi-scenario-value={scenario.key}>
+                          {formatCompactCurrency(scenario.value)}
+                        </p>
+                        <div class="roi-scenario-column-track">
+                          <span
+                            class="roi-scenario-column-fill"
+                            data-roi-scenario-column={scenario.key}
+                            style={"--bar-scale:" + scenario.value / maxScenarioValue + ";"}
+                          ></span>
+                        </div>
+                        <p class="roi-scenario-label" title={scenario.label} aria-label={scenario.label}>
+                          {scenario.shortLabel}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <p class="sr-only" data-roi-scenario-summary>
+                {scenarioRows.map((item) => `${item.label}: ${formatCurrency(item.value)}`).join(". ")}
+              </p>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <div class="roi-support-grid">
+        <div class="roi-accordion-stack">
+          <details class="roi-accordion" data-roi-details>
+            <summary aria-expanded="false">Assumptions &amp; methodology</summary>
+            <div class="roi-accordion-body">
+              <p>
+                This estimator is directional rather than predictive. It is designed to frame a
+                reasonable value range, not a guaranteed outcome.
+              </p>
+              <p>
+                Your organization inputs drive the estimate, including payroll exposure, turnover
+                cost, and absence cost. Scenario settings adjust model sensitivity while keeping
+                those inputs constant.
+              </p>
+              <ul>
+                <li>Replacement cost is modeled as a percentage of salary.</li>
+                <li>Productivity, absenteeism, and disengagement effects remain capped and conservative.</li>
+                <li>The model uses research-informed relationships rather than firm-specific operational data.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="roi-accordion" data-roi-details>
+            <summary aria-expanded="false">Disclaimer</summary>
+            <div class="roi-accordion-body">
+              <p>
+                This estimator provides directional estimates based on the information entered and
+                conservative, research-informed assumptions. It is intended for informational
+                purposes only and does not guarantee financial outcomes.
+              </p>
+              <p>
+                Actual results may vary materially based on industry conditions, labor market
+                dynamics, workforce composition, compensation structure, leadership effectiveness,
+                implementation quality, and time horizon.
+              </p>
+              <p>
+                This tool does not constitute financial, legal, accounting, or human resources
+                advice.
+              </p>
+            </div>
+          </details>
+        </div>
+
+        <aside class="card roi-cta-card" aria-labelledby="roi-cta-title">
+          <div class="roi-cta-copy">
+            <p class="small-label mono-label">Next step</p>
+            <h3 id="roi-cta-title">Want a more grounded projection for your organization?</h3>
+            <p>
+              NSBS can translate these directional estimates into a more accurate diagnostic based
+              on role mix, turnover pressure, leadership systems, and current operating conditions.
+            </p>
+          </div>
+          <div class="button-row">
+            <a class="button button-primary" href="/contact">Run a Workforce Diagnostic</a>
+            <a class="button button-secondary" href="/services">Review consulting services</a>
+          </div>
+        </aside>
+      </div>
+
+      <script>
+        import { initRoiEstimator } from "./roiEstimatorClient";
+
+        initRoiEstimator();
+      </script>
+    </section>
+  </div>
+</section>
+
+<style>
+  .roi-tool-section {
+    padding-top: var(--section-space-tight);
+  }
+
+  .roi-section-head,
+  .roi-section-copy,
+  .roi-main-grid,
+  .roi-support-grid,
+  .roi-panel,
+  .roi-panel-head,
+  .roi-field,
+  .roi-advanced-grid,
+  .roi-summary-grid,
+  .roi-breakdown-grid,
+  .roi-breakdown-card,
+  .roi-charts-grid,
+  .roi-chart-card,
+  .roi-accordion-stack,
+  .roi-cta-card,
+  .roi-cta-copy {
+    display: grid;
+    gap: var(--panel-gap);
+  }
+
+  .roi-section-shell {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .roi-panel {
+    align-content: start;
+    padding: clamp(1rem, 0.9rem + 0.7vw, 1.5rem);
+  }
+
+  .roi-field-grid {
+    display: grid;
+    gap: 0.95rem;
+  }
+
+  .roi-field label,
+  .roi-field legend,
+  .roi-toggle-copy label {
+    color: var(--text-strong);
+    font-size: var(--text-small);
+    font-weight: var(--weight-medium);
+  }
+
+  .roi-field-note,
+  .roi-breakdown-helper,
+  .roi-kpi-note,
+  .roi-live-note,
+  .roi-toggle-copy p,
+  .roi-range-meta,
+  .roi-chart-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--text-small);
+  }
+
+  .roi-field-head,
+  .roi-breakdown-top,
+  .roi-chart-head,
+  .roi-results-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .roi-input-shell,
+  .roi-segmented-pill,
+  .roi-switch-track,
+  .roi-stacked-bar,
+  .roi-scenario-column-track {
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .roi-input-shell {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    min-height: 2.8rem;
+    padding: 0 0.8rem;
+  }
+
+  .roi-input-shell input,
+  .roi-segmented-input,
+  .roi-switch input {
+    width: 100%;
+  }
+
+  .roi-input-shell input {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .roi-input-shell-currency span,
+  .roi-input-shell-suffix span {
+    color: var(--muted);
+  }
+
+  .roi-range-input {
+    width: 100%;
+  }
+
+  .roi-range-meta {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .roi-segmented {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .roi-segmented-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .roi-segmented-pill {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.75rem 0.85rem;
+    cursor: pointer;
+  }
+
+  .roi-segmented-input:checked + .roi-segmented-pill {
+    border-color: rgba(47, 111, 94, 0.28);
+    background: rgba(47, 111, 94, 0.08);
+  }
+
+  .roi-advanced summary,
+  .roi-accordion summary {
+    cursor: pointer;
+    color: var(--text-strong);
+    font-weight: var(--weight-medium);
+  }
+
+  .roi-advanced-body,
+  .roi-accordion-body {
+    padding-top: 0.9rem;
+  }
+
+  .roi-toggle-field {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .roi-switch {
+    display: inline-flex;
+    gap: 0.55rem;
+    align-items: center;
+  }
+
+  .roi-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .roi-switch-track {
+    position: relative;
+    width: 2.75rem;
+    height: 1.45rem;
+    border-radius: 999px;
+    background: rgba(47, 111, 94, 0.12);
+  }
+
+  .roi-switch-track::after {
+    content: "";
+    position: absolute;
+    inset: 0.12rem auto 0.12rem 0.12rem;
+    width: 1rem;
+    border-radius: 999px;
+    background: var(--surface);
+    transition: transform 0.2s ease;
+  }
+
+  .roi-switch input:checked + .roi-switch-track::after {
+    transform: translateX(1.25rem);
+  }
+
+  .roi-input-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .roi-scenario-chip {
+    display: inline-flex;
+    gap: 0.55rem;
+    align-items: center;
+    width: fit-content;
+    min-height: 1.95rem;
+    padding: 0.3rem 0.68rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.92);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+  }
+
+  .roi-summary-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .roi-kpi-card,
+  .roi-breakdown-card {
+    padding: 1rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.84);
+  }
+
+  .roi-kpi-card-primary {
+    background: linear-gradient(180deg, rgba(47, 111, 94, 0.08), rgba(255, 255, 255, 0.96));
+  }
+
+  .roi-kpi-label,
+  .roi-kpi-value,
+  .roi-breakdown-label,
+  .roi-breakdown-value,
+  .roi-chart-total,
+  .roi-scenario-value,
+  .roi-scenario-label {
+    margin: 0;
+  }
+
+  .roi-kpi-value {
+    color: var(--text-strong);
+    font-size: clamp(1.7rem, 1.4vw + 1.2rem, 2.3rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .roi-breakdown-value {
+    color: var(--text-strong);
+    font-size: 1.15rem;
+    font-weight: var(--weight-semibold);
+  }
+
+  .roi-mini-chart {
+    width: 100%;
+    height: auto;
+    color: var(--accent);
+  }
+
+  .roi-breakdown-share {
+    margin: 0;
+    color: var(--accent);
+    font-size: var(--text-small);
+  }
+
+  .roi-stacked-bar {
+    display: flex;
+    min-height: 1.1rem;
+    overflow: hidden;
+  }
+
+  .roi-stacked-segment {
+    flex: calc(var(--segment-share, 0) * 1000) 1 0;
+  }
+
+  .roi-stacked-segment-turnoverSavings,
+  .roi-chart-swatch-turnoverSavings {
+    background: rgba(76, 143, 122, 0.72);
+  }
+
+  .roi-stacked-segment-productivityValue,
+  .roi-chart-swatch-productivityValue {
+    background: rgba(47, 111, 94, 0.84);
+  }
+
+  .roi-stacked-segment-absenteeSavings,
+  .roi-chart-swatch-absenteeSavings {
+    background: rgba(201, 162, 39, 0.72);
+  }
+
+  .roi-stacked-segment-disengagementSavings,
+  .roi-chart-swatch-disengagementSavings {
+    background: rgba(196, 122, 44, 0.72);
+  }
+
+  .roi-chart-legend {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .roi-chart-legend li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.55rem;
+    align-items: center;
+  }
+
+  .roi-chart-swatch {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 999px;
+  }
+
+  .roi-scenario-plot {
+    position: relative;
+  }
+
+  .roi-scenario-baseline {
+    position: absolute;
+    inset: auto 0 2rem;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .roi-scenario-chart {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    align-items: end;
+    min-height: 14rem;
+  }
+
+  .roi-scenario-column-card {
+    position: relative;
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.84);
+  }
+
+  .roi-scenario-column-card.is-selected {
+    border-color: rgba(47, 111, 94, 0.28);
+    background: rgba(47, 111, 94, 0.08);
+  }
+
+  .roi-scenario-column-stack {
+    display: grid;
+    gap: 0.65rem;
+    align-items: end;
+    min-height: 100%;
+  }
+
+  .roi-scenario-column-track {
+    display: flex;
+    align-items: end;
+    min-height: 8.5rem;
+    padding: 0.2rem;
+    background: rgba(47, 111, 94, 0.05);
+  }
+
+  .roi-scenario-column-fill {
+    display: block;
+    width: 100%;
+    min-height: 0.65rem;
+    background: linear-gradient(180deg, rgba(47, 111, 94, 0.9), rgba(47, 111, 94, 0.45));
+    transform-origin: bottom center;
+    transform: scaleY(var(--bar-scale, 0));
+    transition: transform 0.24s ease;
+  }
+
+  .roi-scenario-label {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+  }
+
+  .roi-cta-card {
+    align-content: start;
+  }
+
+  .roi-accordion-stack details,
+  .roi-cta-card {
+    padding: 1rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.84);
+  }
+
+  .roi-accordion-body p:first-child,
+  .roi-accordion-body ul:first-child,
+  .roi-cta-copy p:first-child {
+    margin-top: 0;
+  }
+
+  @media (min-width: 720px) {
+    .roi-field-grid,
+    .roi-advanced-grid,
+    .roi-summary-grid,
+    .roi-breakdown-grid,
+    .roi-charts-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 960px) {
+    .roi-main-grid {
+      grid-template-columns: minmax(18rem, 0.92fr) minmax(0, 1.08fr);
+      align-items: start;
+    }
+
+    .roi-support-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.8fr);
+      align-items: start;
+    }
+  }
+</style>
