@@ -1,0 +1,207 @@
+---
+const {
+  panelId,
+  label,
+  title,
+  className = "",
+  defaultCollapsed = true,
+} = Astro.props;
+
+const regionId = `${panelId}-panel-body`;
+const titleId = `${panelId}-panel-title`;
+---
+
+<section
+  class:list={["obs-panel-card", "obs-panel-window", "card", className]}
+  data-collapsible-panel
+  data-panel-id={panelId}
+  data-panel-label={label}
+  data-collapsed={String(defaultCollapsed)}
+  data-default-collapsed={String(defaultCollapsed)}
+>
+  <header class="obs-panel-summary">
+    <div class="obs-panel-summary-copy">
+      <p class="small-label mono-label">{label}</p>
+      <h3 id={titleId}>{title}</h3>
+    </div>
+
+    <button
+      type="button"
+      class="obs-panel-toggle"
+      data-panel-toggle
+      aria-expanded={defaultCollapsed ? "false" : "true"}
+      aria-controls={regionId}
+      aria-label={`${defaultCollapsed ? "Expand" : "Collapse"} ${label}`}
+    >
+      <span class="sr-only">{label}</span>
+      <span class="obs-panel-toggle-label" data-panel-toggle-label>
+        {defaultCollapsed ? "Expand" : "Collapse"}
+      </span>
+      <span class="obs-panel-toggle-icon" aria-hidden="true"></span>
+    </button>
+  </header>
+
+  <div
+    id={regionId}
+    class="obs-panel-body-shell"
+    data-panel-body-shell
+    role="region"
+    aria-labelledby={titleId}
+    aria-hidden={defaultCollapsed ? "true" : "false"}
+    inert={defaultCollapsed}
+  >
+    <div class="obs-panel-body">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .obs-panel-window {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
+    align-content: start;
+    align-self: start;
+  }
+
+  .obs-panel-summary,
+  .obs-panel-summary-copy,
+  .obs-panel-body-shell,
+  .obs-panel-body {
+    display: grid;
+    gap: var(--panel-gap);
+  }
+
+  .obs-panel-summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    align-items: center;
+    padding: 1rem 1.1rem;
+  }
+
+  .obs-panel-summary-copy {
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .obs-panel-summary-copy .small-label {
+    margin-bottom: 0;
+  }
+
+  .obs-panel-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2rem;
+    padding: 0.38rem 0.68rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--muted-strong);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    line-height: 1.35;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .obs-panel-toggle:hover,
+  .obs-panel-toggle:focus-visible {
+    border-color: rgba(47, 111, 94, 0.28);
+    background: rgba(47, 111, 94, 0.08);
+    color: var(--accent);
+  }
+
+  .obs-panel-toggle-label {
+    display: inline-flex;
+  }
+
+  .obs-panel-toggle-icon {
+    position: relative;
+    width: 0.72rem;
+    height: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  .obs-panel-toggle-icon::before,
+  .obs-panel-toggle-icon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.62rem;
+    height: 1px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+    transition:
+      transform 0.24s ease,
+      opacity 0.18s ease;
+  }
+
+  .obs-panel-toggle-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .obs-panel-body-shell {
+    grid-template-rows: 1fr;
+    min-height: 0;
+    overflow: hidden;
+    opacity: 1;
+    transition:
+      grid-template-rows 0.28s ease,
+      opacity 0.18s ease;
+  }
+
+  .obs-panel-body {
+    min-height: 0;
+    overflow: hidden;
+    padding: 0.95rem 1.1rem 1.1rem;
+    border-top: 1px solid var(--line);
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.18s ease,
+      transform 0.28s ease,
+      padding 0.28s ease,
+      border-color 0.2s ease;
+  }
+
+  .obs-panel-window[data-collapsed="true"] .obs-panel-body-shell {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .obs-panel-window[data-collapsed="true"] .obs-panel-body {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-color: transparent;
+    opacity: 0;
+    transform: translateY(-0.2rem);
+    pointer-events: none;
+  }
+
+  .obs-panel-window[data-collapsed="false"] .obs-panel-toggle-icon::after {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(90deg) scaleX(0.2);
+  }
+
+  @media (max-width: 639px) {
+    .obs-panel-summary {
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: start;
+    }
+
+    .obs-panel-toggle {
+      justify-self: start;
+    }
+  }
+</style>

@@ -12,6 +12,101 @@ import {
 } from "./observatoryLogic";
 
 type SignalFilter = "All" | PillarName;
+type PanelState = "collapsed" | "expanded";
+
+class CollapsiblePanelController {
+  private readonly root: HTMLElement;
+  private readonly button: HTMLButtonElement | null;
+  private readonly bodyShell: HTMLElement | null;
+  private readonly panelId: string;
+  private readonly panelLabel: string;
+  private collapsed: boolean;
+
+  constructor(root: HTMLElement) {
+    this.root = root;
+    this.button = root.querySelector<HTMLButtonElement>("[data-panel-toggle]");
+    this.bodyShell = root.querySelector<HTMLElement>("[data-panel-body-shell]");
+    this.panelId = root.dataset.panelId || "panel";
+    this.panelLabel = root.dataset.panelLabel || "panel";
+    this.collapsed = root.dataset.defaultCollapsed === "true";
+  }
+
+  init() {
+    if (!this.button || !this.bodyShell) {
+      return;
+    }
+
+    this.collapsed = this.readPersistedState() ?? this.collapsed;
+    this.button.addEventListener("click", () => {
+      this.setCollapsed(!this.collapsed);
+    });
+    this.render();
+  }
+
+  private get storageKey() {
+    return `nsbs:business-lab:${this.panelId}:state`;
+  }
+
+  private readPersistedState() {
+    try {
+      const persisted = window.sessionStorage.getItem(this.storageKey);
+
+      if (persisted === "collapsed") {
+        return true;
+      }
+
+      if (persisted === "expanded") {
+        return false;
+      }
+    } catch {
+      return null;
+    }
+
+    return null;
+  }
+
+  private persistState() {
+    try {
+      const value: PanelState = this.collapsed ? "collapsed" : "expanded";
+      window.sessionStorage.setItem(this.storageKey, value);
+    } catch {
+      return;
+    }
+  }
+
+  private setCollapsed(nextCollapsed: boolean) {
+    this.collapsed = nextCollapsed;
+    this.persistState();
+    this.render();
+  }
+
+  private render() {
+    if (!this.button || !this.bodyShell) {
+      return;
+    }
+
+    const expanded = !this.collapsed;
+    const nextLabel = expanded ? "Collapse" : "Expand";
+
+    this.root.dataset.collapsed = String(this.collapsed);
+    this.button.setAttribute("aria-expanded", String(expanded));
+    this.button.setAttribute("aria-label", `${nextLabel} ${this.panelLabel}`);
+
+    const label = this.button.querySelector<HTMLElement>("[data-panel-toggle-label]");
+    if (label) {
+      label.textContent = nextLabel;
+    }
+
+    this.bodyShell.setAttribute("aria-hidden", String(this.collapsed));
+    this.bodyShell.toggleAttribute("hidden", false);
+
+    if (this.collapsed) {
+      this.bodyShell.setAttribute("inert", "");
+    } else {
+      this.bodyShell.removeAttribute("inert");
+    }
+  }
+}
 
 function escapeHtml(value: string) {
   return String(value)
@@ -558,6 +653,9 @@ export function initWorkforceObservatory() {
     }
 
     root.dataset.observatoryBooted = "true";
+    root.querySelectorAll<HTMLElement>("[data-collapsible-panel]").forEach((panel) => {
+      new CollapsiblePanelController(panel).init();
+    });
     new WorkforceObservatoryController(root, model).init();
   });
 }
