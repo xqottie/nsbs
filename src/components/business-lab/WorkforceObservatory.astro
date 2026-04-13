@@ -273,13 +273,19 @@ const radarPillars = PILLAR_ORDER.map((pillar, index) => ({
       </div>
 
       <div class="obs-lower-grid">
-        <article class="obs-panel-card card">
-          <header class="obs-panel-head">
+        <details class="obs-panel-card obs-panel-window card">
+          <summary class="obs-panel-summary">
             <div>
               <p class="small-label mono-label">Data & sources</p>
               <h3>Metrics behind the pillar signal</h3>
             </div>
+            <span class="obs-panel-summary-state" aria-hidden="true">
+              <span class="obs-panel-summary-closed">Expand</span>
+              <span class="obs-panel-summary-open">Collapse</span>
+            </span>
+          </summary>
 
+          <div class="obs-panel-body">
             <div class="obs-panel-head-actions">
               <p class="obs-panel-pill" data-metrics-pillar-label>{defaultPillar}</p>
               <button
@@ -291,102 +297,108 @@ const radarPillars = PILLAR_ORDER.map((pillar, index) => ({
                 View all pillars
               </button>
             </div>
-          </header>
 
-          <div class="obs-metrics-grid" data-metrics-grid>
-            {initialMetrics.map((metric) => (
-              <article class="obs-metric-card card">
-                <p class="obs-metric-label">{metric.label}</p>
-                <div class="obs-metric-value-row">
-                  <p class="obs-metric-value">{metric.value}</p>
-                  {metric.unit && <p class="obs-metric-unit">{metric.unit}</p>}
-                  <span class={"obs-metric-status obs-metric-status--" + metric.status.toLowerCase()}>
-                    {metric.status}
-                  </span>
-                </div>
-                {metric.trendLabel && <p class="obs-metric-trend">{metric.trendLabel}</p>}
-                <div class="obs-metric-meta-row">
-                  <p class="obs-metric-meta">Updated {metric.timeframe}</p>
-                  {
-                    metric.sourceUrl ? (
-                      <a
-                        class="obs-metric-source"
-                        href={metric.sourceUrl}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        title={metric.sourceLabel}
-                      >
-                        {metric.sourceLabel}
-                        <span aria-hidden="true">↗</span>
-                      </a>
-                    ) : (
-                      <span class="obs-metric-source">{metric.sourceLabel}</span>
-                    )
-                  }
-                </div>
-              </article>
-            ))}
+            <div class="obs-metrics-grid" data-metrics-grid>
+              {initialMetrics.map((metric) => (
+                <article class="obs-metric-card card">
+                  <p class="obs-metric-label">{metric.label}</p>
+                  <div class="obs-metric-value-row">
+                    <p class="obs-metric-value">{metric.value}</p>
+                    {metric.unit && <p class="obs-metric-unit">{metric.unit}</p>}
+                    <span class={"obs-metric-status obs-metric-status--" + metric.status.toLowerCase()}>
+                      {metric.status}
+                    </span>
+                  </div>
+                  {metric.trendLabel && <p class="obs-metric-trend">{metric.trendLabel}</p>}
+                  <div class="obs-metric-meta-row">
+                    <p class="obs-metric-meta">Updated {metric.timeframe}</p>
+                    {
+                      metric.sourceUrl ? (
+                        <a
+                          class="obs-metric-source"
+                          href={metric.sourceUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          title={metric.sourceLabel}
+                        >
+                          {metric.sourceLabel}
+                          <span aria-hidden="true">↗</span>
+                        </a>
+                      ) : (
+                        <span class="obs-metric-source">{metric.sourceLabel}</span>
+                      )
+                    }
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <p class="body small obs-empty-state" data-metrics-empty hidden={initialMetrics.length > 0}>
+              No metric cards are available for this pillar.
+            </p>
           </div>
+        </details>
 
-          <p class="body small obs-empty-state" data-metrics-empty hidden={initialMetrics.length > 0}>
-            No metric cards are available for this pillar.
-          </p>
-        </article>
-
-        <article class="obs-panel-card card">
-          <header class="obs-panel-head">
+        <details class="obs-panel-card obs-panel-window card">
+          <summary class="obs-panel-summary">
             <div>
               <p class="small-label mono-label">Observatory feed</p>
               <h3>Latest signal entries</h3>
             </div>
-          </header>
+            <span class="obs-panel-summary-state" aria-hidden="true">
+              <span class="obs-panel-summary-closed">Expand</span>
+              <span class="obs-panel-summary-open">Collapse</span>
+            </span>
+          </summary>
 
-          <div class="obs-feed-filters" role="tablist" aria-label="Filter observatory signals">
-            <button type="button" class="is-selected" data-signal-filter="All" aria-selected="true" aria-pressed="true">
-              All
-            </button>
-            {PILLAR_ORDER.map((pillar) => (
-              <button
-                type="button"
-                data-signal-filter={pillar}
-                aria-selected="false"
-                aria-pressed="false"
-              >
-                {pillar}
+          <div class="obs-panel-body">
+            <div class="obs-feed-filters" role="tablist" aria-label="Filter observatory signals">
+              <button type="button" class="is-selected" data-signal-filter="All" aria-selected="true" aria-pressed="true">
+                All
               </button>
-            ))}
-          </div>
+              {PILLAR_ORDER.map((pillar) => (
+                <button
+                  type="button"
+                  data-signal-filter={pillar}
+                  aria-selected="false"
+                  aria-pressed="false"
+                >
+                  {pillar}
+                </button>
+              ))}
+            </div>
 
-          <ul class="obs-feed-list" data-signal-list>
-            {model.signals.map((signal) => (
-              <li class="obs-feed-row" data-signal-item data-signal-pillar={signal.pillar}>
-                <div class="obs-feed-row-top">
-                  <span class="obs-feed-date">{signal.dateLabel}</span>
-                  <span class="obs-feed-pillar" data-pillar={pillarKey(signal.pillar)}>
-                    {signal.pillar}
-                  </span>
-                </div>
-                <h3 class="obs-feed-title">{signal.title}</h3>
-                <p class="obs-feed-summary">{signal.summary}</p>
-                {
-                  signal.sourceUrl ? (
-                    <a
-                      class="obs-feed-source"
-                      href={signal.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      {signal.sourceLabel}
-                      <span aria-hidden="true">↗</span>
-                    </a>
-                  ) : (
-                    <span class="obs-feed-source">{signal.sourceLabel}</span>
-                  )
-                }
-              </li>
-            ))}
-          </ul>
-        </article>
+            <ul class="obs-feed-list" data-signal-list>
+              {model.signals.map((signal) => (
+                <li class="obs-feed-row" data-signal-item data-signal-pillar={signal.pillar}>
+                  <div class="obs-feed-row-top">
+                    <span class="obs-feed-date">{signal.dateLabel}</span>
+                    <span class="obs-feed-pillar" data-pillar={pillarKey(signal.pillar)}>
+                      {signal.pillar}
+                    </span>
+                  </div>
+                  <h3 class="obs-feed-title">{signal.title}</h3>
+                  <p class="obs-feed-summary">{signal.summary}</p>
+                  {
+                    signal.sourceUrl ? (
+                      <a
+                        class="obs-feed-source"
+                        href={signal.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        {signal.sourceLabel}
+                        <span aria-hidden="true">↗</span>
+                      </a>
+                    ) : (
+                      <span class="obs-feed-source">{signal.sourceLabel}</span>
+                    )
+                  }
+                </li>
+              ))}
+            </ul>
+          </div>
+        </details>
       </div>
 
       <footer class="obs-footer">
@@ -557,6 +569,66 @@ const radarPillars = PILLAR_ORDER.map((pillar, index) => ({
   .obs-radar-card,
   .obs-panel-card {
     align-content: start;
+  }
+
+  .obs-panel-window {
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .obs-panel-summary,
+  .obs-panel-body {
+    display: grid;
+    gap: var(--panel-gap);
+  }
+
+  .obs-panel-summary {
+    list-style: none;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem 1.1rem;
+  }
+
+  .obs-panel-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .obs-panel-summary-state {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.38rem 0.68rem;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--muted-strong);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .obs-panel-summary-open {
+    display: none;
+  }
+
+  .obs-panel-window[open] .obs-panel-summary {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .obs-panel-window[open] .obs-panel-summary-closed {
+    display: none;
+  }
+
+  .obs-panel-window[open] .obs-panel-summary-open {
+    display: inline;
+  }
+
+  .obs-panel-body {
+    padding: 0 1.1rem 1.1rem;
   }
 
   .obs-radar-head,

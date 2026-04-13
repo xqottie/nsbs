@@ -1,0 +1,518 @@
+---
+import CTASection from "../components/CTASection.astro";
+import HeroSection from "../components/HeroSection.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import SectionBlock from "../components/SectionBlock.astro";
+import SystemIcon from "../components/SystemIcon.astro";
+
+const contactEmail = "sthompson@northernsparkl3c.com";
+const capabilityStatementHref = `mailto:${contactEmail}?subject=${encodeURIComponent("Capability Statement Request")}`;
+
+const partnerCategories = [
+  {
+    title: "State and local government",
+    body: "NSBS supports public agencies, municipalities, and department leaders who need stronger supervisor capability, clearer support pathways, and steadier workforce conditions under public accountability.",
+  },
+  {
+    title: "Public health and community agencies",
+    body: "For teams carrying prevention, outreach, case coordination, or community response work, NSBS helps strengthen support capacity, communication clarity, and workforce resilience under sustained demand.",
+  },
+  {
+    title: "School districts and higher education",
+    body: "NSBS works with educators, student support teams, and campus leaders who want a more durable approach to staff support, early response confidence, and leadership stability.",
+  },
+  {
+    title: "Healthcare systems and care providers",
+    body: "Healthcare and healthcare-adjacent organizations can use NSBS support to address burnout strain, team communication pressure, and the operating conditions affecting retention and sustainable performance.",
+  },
+  {
+    title: "Nonprofits and mission-driven organizations",
+    body: "Mission-driven teams often carry high emotional load with limited slack. NSBS helps organizations protect their people while improving structural clarity, engagement conditions, and day-to-day support systems.",
+  },
+  {
+    title: "Workforce and regional development partners",
+    body: "NSBS can support employer collaboratives, regional initiatives, and ecosystem partners that need practical frameworks for workforce resilience, partner alignment, and support capacity across multiple stakeholders.",
+  },
+];
+
+const offerings = [
+  {
+    icon: "workshop",
+    title: "Mental Health First Aid Training",
+    description:
+      "Scott provides certified Adult Mental Health First Aid and Youth Mental Health First Aid training for organizations that need practical, early-intervention skill building. Youth MHFA is designed for adults who support young people and is scoped to organizational readiness, staff role, and implementation fit.",
+    audience:
+      "Educators, supervisors, public-facing staff, community-based teams, and organizations that want a clearer shared language for early support.",
+    useCases:
+      "Staff development, supervisor readiness, school and youth-serving environments, community-serving teams, and public-interest organizations building response confidence.",
+    outcomes:
+      "More confidence recognizing signs, stronger early conversations, clearer referral awareness, reduced stigma, and better readiness to support others appropriately.",
+  },
+  {
+    icon: "leadership",
+    title: "Trauma-Informed Leadership and Workforce Training",
+    description:
+      "Training that helps leaders and teams understand how stress, overwhelm, ambiguity, and institutional pressure shape communication, trust, and behavior at work.",
+    audience:
+      "Managers, directors, school and program leadership, healthcare-adjacent teams, and organizations leading through sustained change or strain.",
+    useCases:
+      "Supervisor development, culture repair, change navigation, staff support expectations, and rebuilding steadier leadership responses after high-pressure periods.",
+    outcomes:
+      "Calmer leadership behavior, clearer expectations, stronger support conversations, lower avoidable friction, and better day-to-day engagement conditions.",
+  },
+  {
+    icon: "assessment",
+    title: "SPARK Assessments and Workforce Diagnostics",
+    description:
+      "Structured diagnostics help organizations identify the pressure points affecting support capacity, engagement, leadership stability, and sustainable performance across the workforce system.",
+    audience:
+      "Leaders who need a clearer baseline before launching broader training, redesign, or culture work.",
+    useCases:
+      "Retention strain, burnout exposure, engagement concerns, misaligned expectations, team instability, and unclear root causes behind workforce friction.",
+    outcomes:
+      "Sharper diagnosis, shared language for decision-making, targeted next steps, and a more credible link between people outcomes and system conditions.",
+  },
+  {
+    icon: "systems",
+    title: "Systems Design and Strategic Consulting",
+    description:
+      "Consulting engagements translate insight into structural improvement, with attention to leadership behavior, communication clarity, burnout risk, governance patterns, and sustainable performance.",
+    audience:
+      "Executive leaders, department heads, boards, cross-functional steering groups, and organizations shaping multi-phase workforce strategy.",
+    useCases:
+      "Implementation planning, support system redesign, leadership alignment, workforce resilience strategy, and organization-wide stabilization efforts.",
+    outcomes:
+      "Stronger support systems, clearer operating expectations, better leadership traction, improved engagement conditions, and more durable organizational stability.",
+  },
+];
+
+const bestFitAudiences = [
+  "Educators and school staff",
+  "Frontline supervisors and managers",
+  "Community organizations",
+  "Public-facing teams",
+  "Healthcare-adjacent teams",
+  "Mission-driven employers",
+];
+
+const currentPressurePoints = [
+  "Burnout is reducing steadiness across teams that were already operating with limited slack.",
+  "Retention strain is making it harder to preserve knowledge, continuity, and supervisory capacity.",
+  "Public-serving roles are carrying more emotional load without a matching increase in support systems.",
+  "Schools, nonprofits, healthcare teams, and community agencies are being asked to absorb more complexity with fewer buffers.",
+  "Early support systems now matter as much as formal interventions because first conversations often happen long before clinical care is involved.",
+];
+
+const differentiators = [
+  {
+    icon: "systems",
+    title: "Systems-first approach",
+    body: "NSBS treats workforce strain as a systems question first, which keeps training, diagnostics, and consulting tied to the structure people work inside.",
+  },
+  {
+    icon: "social",
+    title: "Trauma-sensitive and neuroinclusive perspective",
+    body: "The work pays attention to ambiguity, overload, supported challenge, and the lived cost of unstable environments without turning human complexity into vague language.",
+  },
+  {
+    icon: "spark",
+    title: "Practical workforce diagnostics through the SPARK model",
+    body: "SPARK gives organizations a disciplined way to read engagement conditions, support capacity, burnout risk, and structural friction before deciding what to change.",
+  },
+  {
+    icon: "case",
+    title: "Maine-rooted, mission-driven partnership",
+    body: "NSBS brings a grounded partnership style shaped by public-interest work, community realities, and a commitment to useful support rather than generic consulting posture.",
+  },
+];
+
+const partnershipPathways = [
+  {
+    label: "Training Engagement",
+    title: "A focused training-led engagement",
+    body: "Best for organizations that need immediate capability building around early support, trauma-informed leadership, or workforce resilience without beginning with a full diagnostic process.",
+    includes:
+      "May include certified MHFA instruction, trauma-informed workforce training, participant materials, and a short leadership debrief to clarify next-step priorities.",
+  },
+  {
+    label: "Diagnostic + Training Engagement",
+    title: "Assessment-informed capacity building",
+    body: "Best for organizations that need training, but also need a clearer read on the conditions affecting engagement, burnout risk, support capacity, or implementation readiness.",
+    includes:
+      "May include SPARK diagnostics, stakeholder input, leadership interpretation sessions, and targeted training aligned to the actual workforce signals present in the system.",
+  },
+  {
+    label: "Strategic Partnership",
+    title: "Ongoing systems support",
+    body: "Best for agencies and organizations shaping broader workforce resilience strategy, support system redesign, or long-range implementation across departments, sites, or partner networks.",
+    includes:
+      "May include advisory support, systems design, phased training, leadership facilitation, cross-functional planning, and follow-through support as conditions evolve.",
+  },
+];
+---
+
+<MainLayout
+  title="Government & Community Partnerships | Workforce Resilience, MHFA, and Systems Support | NSBS"
+  description="Northern Spark Business Solutions partners with government agencies, schools, nonprofits, healthcare systems, and community organizations on workforce resilience, trauma-informed training, Mental Health First Aid education, diagnostics, and systems design."
+>
+  <HeroSection
+    eyebrow="Government, Education, and Community Partnerships"
+    title="Build stronger systems of support"
+    body="NSBS helps organizations strengthen workforce resilience, leadership capability, engagement conditions, and early-support capacity through consulting, diagnostics, and training designed for real operating pressure. Mental Health First Aid training is one important part of that mix, alongside trauma-informed workforce development and systems-focused consulting."
+    actions={[
+      { href: "/contact", label: "Start a Conversation" },
+      { href: "#partnership-pathways", label: "View Partnership Options", variant: "secondary" },
+    ]}
+    className="partnership-hero"
+  >
+    <p class="small-label mono-label">Partnership scope</p>
+    <h2 class="subsection-title hero-aside-title">Structured support for public-serving organizations</h2>
+    <p class="body small hero-aside-note">
+      NSBS is positioned as a workforce systems partner, not just a training vendor. Engagements
+      can begin with a focused training need or grow into broader diagnostic and strategic support.
+    </p>
+    <ul class="signal-list compact partnership-hero-list">
+      <li>Consulting, diagnostics, and training aligned to mission-critical work</li>
+      <li>Trauma-informed and neuroinclusive perspective</li>
+      <li>Scoped for agencies, schools, nonprofits, healthcare, and regional partners</li>
+    </ul>
+  </HeroSection>
+
+  <SectionBlock
+    id="partner-categories"
+    eyebrow="Who we partner with"
+    title="Support designed for organizations carrying public trust"
+    intro="NSBS works best with leaders who need thoughtful, contract-ready support that respects mission pressure, operational realities, and the importance of stable workforce systems."
+    className="partnership-section"
+  >
+    <div class="card-grid three-up partner-category-grid">
+      {partnerCategories.map((partner) => (
+        <article class="card partner-card">
+          <div class="card-title-row">
+            <h3>{partner.title}</h3>
+            <p>{partner.body}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    id="partnership-offerings"
+    eyebrow="Partnership offerings"
+    title="Four practical ways organizations can work with NSBS"
+    intro="Support can start with training, move through structured diagnostics, or expand into longer systems work depending on what the organization is carrying and what decisions need to be made."
+    className="partnership-section"
+  >
+    <div class="card-grid partnership-offerings-grid">
+      {offerings.map((offering) => (
+        <article class="card offering-card">
+          <div class="offering-head">
+            <span class="icon-badge" aria-hidden="true">
+              <SystemIcon name={offering.icon} size="md" />
+            </span>
+            <div class="card-title-row">
+              <h3>{offering.title}</h3>
+              <p>{offering.description}</p>
+            </div>
+          </div>
+
+          <dl class="offering-detail-list">
+            <div class="offering-detail">
+              <dt class="small-label mono-label">Who it is for</dt>
+              <dd>{offering.audience}</dd>
+            </div>
+            <div class="offering-detail">
+              <dt class="small-label mono-label">Typical use cases</dt>
+              <dd>{offering.useCases}</dd>
+            </div>
+            <div class="offering-detail">
+              <dt class="small-label mono-label">Likely outcomes</dt>
+              <dd>{offering.outcomes}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    id="mental-health-first-aid"
+    eyebrow="Mental Health First Aid"
+    title="Early-support training within a broader workforce systems approach"
+    intro="Mental Health First Aid is valuable when organizations want people to respond earlier, more confidently, and with better judgment. NSBS positions that training inside a larger conversation about leadership, structure, and support capacity."
+    className="partnership-section"
+  >
+    <div class="mhfa-layout">
+      <div class="narrative-block mhfa-copy">
+        <p>
+          Mental Health First Aid is an evidence-based, early-intervention training that helps
+          people recognize, understand, and respond to signs of mental health or substance use
+          challenges.
+        </p>
+        <p>
+          That matters for workplaces, schools, and community-serving organizations because first
+          conversations often happen with supervisors, educators, coordinators, peers, and
+          public-facing teams long before formal care is involved.
+        </p>
+        <p>
+          When people have a practical framework for noticing concern, responding with steadiness,
+          and connecting someone to appropriate support, organizations strengthen culture,
+          confidence, and early response capacity. For youth-serving environments, Youth Mental
+          Health First Aid is designed for adults who support young people rather than a direct
+          student-facing teen program.
+        </p>
+      </div>
+
+      <div class="mhfa-sidecar">
+        <article class="content-panel">
+          <div class="card-title-row">
+            <p class="small-label mono-label">Best fit for</p>
+            <ul class="signal-list compact">
+              {bestFitAudiences.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </article>
+
+        <article class="content-panel mhfa-positioning-panel">
+          <div class="card-title-row">
+            <p class="small-label mono-label">How NSBS positions MHFA</p>
+            <p>
+              NSBS integrates Mental Health First Aid into a broader workforce systems approach
+              that also considers leadership behavior, structural friction, communication clarity,
+              burnout risk, engagement conditions, and the capacity of the organization to support
+              people well over time.
+            </p>
+            <p>
+              That keeps MHFA connected to the wider system instead of treating one training as the
+              entire answer.
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <p class="meta mhfa-disclaimer">
+      Mental Health First Aid® is administered by the National Council for Mental Wellbeing.
+      Northern Spark Business Solutions is an independent provider of certified MHFA training.
+    </p>
+  </SectionBlock>
+
+  <SectionBlock
+    id="why-now"
+    eyebrow="Why this matters now"
+    title="Public-serving organizations are being asked to carry more pressure with less slack"
+    intro="The need is not just for more training. It is for better early support systems, clearer leadership response, and stronger conditions for sustainable performance across public-interest work."
+    className="partnership-section"
+  >
+    <div class="split-layout">
+      <div class="narrative-block">
+        <p>
+          Burnout, retention strain, and workforce instability are no longer isolated HR concerns.
+          They affect continuity, service quality, knowledge transfer, leadership load, and public
+          confidence.
+        </p>
+        <p>
+          Schools, nonprofits, healthcare settings, and government teams are all navigating rising
+          emotional demand while trying to protect mission delivery. In that environment, early
+          support capacity becomes a practical systems need rather than a nice-to-have benefit.
+        </p>
+        <p>
+          Organizations that strengthen support systems early are better positioned to reduce
+          avoidable friction, respond with more steadiness, and preserve the people their mission
+          depends on.
+        </p>
+      </div>
+
+      <div class="content-panel">
+        <div class="card-title-row">
+          <p class="small-label mono-label">What leaders are seeing</p>
+          <ul class="signal-list compact">
+            {currentPressurePoints.map((point) => <li>{point}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    id="nsbs-difference"
+    eyebrow="NSBS difference"
+    title="Why partner with NSBS"
+    intro="The value of the partnership is not just in delivering a program. It is in helping organizations make better system-level decisions about resilience, support, and workforce stability."
+    className="partnership-section"
+  >
+    <div class="card-grid two-up partnership-difference-grid">
+      {differentiators.map((item) => (
+        <article class="card difference-card">
+          <div class="offering-head">
+            <span class="icon-badge" aria-hidden="true">
+              <SystemIcon name={item.icon} size="md" />
+            </span>
+            <div class="card-title-row">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <SectionBlock
+    id="partnership-pathways"
+    eyebrow="Partnership pathways"
+    title="Choose a scope that matches the work in front of you"
+    intro="Organizations do not all need the same kind of support. NSBS offers partnership pathways that can begin with a training need, move into diagnostics, or expand into longer strategic work."
+    className="partnership-section"
+  >
+    <div class="card-grid three-up partnership-pathways-grid">
+      {partnershipPathways.map((pathway) => (
+        <article class="card pathway-card">
+          <div class="card-title-row">
+            <p class="small-label mono-label">{pathway.label}</p>
+            <h3>{pathway.title}</h3>
+            <p>{pathway.body}</p>
+          </div>
+          <div class="pathway-includes">
+            <p class="small-label mono-label">What it may include</p>
+            <p>{pathway.includes}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionBlock>
+
+  <CTASection
+    eyebrow="Next step"
+    title="Plan a partnership that strengthens support capacity before strain becomes instability"
+    body="If your organization is planning around burnout risk, retention pressure, supervisor support, or early-response readiness, NSBS can help shape a partnership that fits the mission and the operating reality."
+    actionHref="/contact"
+    actionLabel="Schedule a Partnership Conversation"
+    secondaryHref={capabilityStatementHref}
+    secondaryLabel="Request a Capability Statement"
+  />
+</MainLayout>
+
+<style>
+  .partnership-section {
+    padding-block: var(--section-space-tight);
+  }
+
+  .partnership-hero :global(.hero-body) {
+    max-width: 45rem;
+  }
+
+  .partnership-hero-list {
+    margin-top: 0.2rem;
+  }
+
+  .partner-card,
+  .offering-card,
+  .difference-card,
+  .pathway-card,
+  .mhfa-layout,
+  .mhfa-copy,
+  .mhfa-sidecar {
+    display: grid;
+    gap: var(--panel-gap);
+  }
+
+  .partner-card {
+    align-content: start;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 1)),
+      var(--color-surface);
+  }
+
+  .partnership-offerings-grid {
+    display: grid;
+    gap: var(--grid-gap);
+  }
+
+  .offering-card,
+  .pathway-card {
+    align-content: start;
+  }
+
+  .offering-head {
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .offering-detail-list {
+    display: grid;
+    gap: 0.8rem;
+    margin: 0;
+  }
+
+  .offering-detail {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 0.05rem;
+  }
+
+  .offering-detail dt {
+    margin: 0;
+  }
+
+  .offering-detail dd {
+    margin: 0;
+    color: var(--muted-strong);
+    font-size: var(--text-small);
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+  }
+
+  .mhfa-layout {
+    gap: var(--grid-gap);
+  }
+
+  .mhfa-copy {
+    max-width: 42rem;
+  }
+
+  .mhfa-positioning-panel {
+    background:
+      linear-gradient(180deg, rgba(47, 111, 94, 0.035), rgba(255, 255, 255, 0.95)),
+      var(--color-surface);
+  }
+
+  .mhfa-disclaimer {
+    margin-top: var(--space-3);
+    padding-top: 0.95rem;
+    border-top: 1px solid var(--line);
+    max-width: 58rem;
+  }
+
+  .difference-card {
+    background:
+      linear-gradient(180deg, rgba(238, 244, 239, 0.72), rgba(255, 255, 255, 0.96)),
+      var(--color-surface);
+  }
+
+  .pathway-includes {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pathway-includes p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 960px) {
+    .partnership-offerings-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mhfa-layout {
+      grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+      align-items: start;
+    }
+  }
+</style>
